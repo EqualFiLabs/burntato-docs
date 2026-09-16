@@ -1,0 +1,39 @@
+---
+id: treasury-rewards
+slug: potato/treasury-rewards
+label: Treasury rewards
+title: Treasury-funded reward schedules
+description: How existing Treasury POTATO can augment future holder rewards without increasing token supply.
+updated: 2026-09-16
+order: 31
+---
+
+Treasury reward schedules add a second holder-time budget to future rounds. They move existing POTATO into escrow; they do not mint new tokens or change base emission.
+
+## Allocate a schedule
+
+The current reward allocator calls:
+
+```solidity
+allocateTreasuryRewards(amount, firstRoundId, roundCount)
+```
+
+The first target must be later than the current activated round. The allocator must hold the exact POTATO, which moves through the Diamond's one-shot protocol-transfer path without a separate ERC-20 approval.
+
+The schedule divides the amount into `perRound` plus a `firstRoundRemainder`, so every base unit is accounted for. Multiple schedules add together.
+
+## Earn through the same time curve
+
+An activated round tracks base emission and Treasury-funded emission separately. Both vest under the holder-time step and duration for that round, but the Treasury component transfers escrowed inventory instead of minting.
+
+`currentEarnedEmission()` returns both base and Treasury-earned values. `Round` exposes separate budgets, opportunities, remaining amounts, emitted amounts, and released amounts.
+
+## Cancel future allocations
+
+The current allocator may cancel a schedule once while it still has unactivated value. Cancellation releases only the future amount into `treasuryPotatoAvailable()`; it does not send tokens directly or alter an active round.
+
+Settlement similarly releases unused active-round Treasury reward inventory.
+
+## Roles are independent
+
+The reward allocator, Treasury recipient, and distributor registry are three separate controls. Changing one does not silently change the others.

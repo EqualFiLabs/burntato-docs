@@ -1,0 +1,55 @@
+---
+id: recovery-overview
+slug: recovery/overview
+label: Recovery overview
+title: The Recovery Market
+description: How forward POTATO commitments compete for a future round's Recovery ETH.
+updated: 2026-09-16
+order: 20
+---
+
+Recovery gives POTATO economic use outside an immediate sale. A holder commits POTATO **before** a target round begins. When that round settles, its Recovery ETH is divided among commitments by weight.
+
+## The simple model
+
+If a round settles with 10 ETH in Recovery and 1,000,000 POTATO committed, an account that committed 100,000 POTATO has 10% of the weight. Before rounding and claim-order dust, its share is 1 ETH.
+
+```text
+ordinary claim = floor(recoveryPool * accountCommitment / totalCommitted)
+```
+
+The last outstanding claimant receives the exact remainder, closing the pool without stranded division dust.
+
+## Commit forward, not backward
+
+`commitRecovery(amount)` always targets `currentRoundId + 1`. The target round's terms are already snapshotted, but the target has not activated.
+
+POTATO moves into Diamond escrow through an exact protocol transfer. An ERC-20 approval is not a way around the token's transfer restrictions, and the commitment is not a normal wallet transfer.
+
+## What happens to committed POTATO
+
+At target settlement, all committed POTATO is consumed once:
+
+```text
+treasuryPotato = floor(totalCommitted * recoveryTreasuryBps / 10_000)
+burnedPotato = totalCommitted - treasuryPotato
+```
+
+The burn-as-remainder rule accounts for every base unit. Fresh defaults burn 90% and make 10% claimable to Treasury.
+
+## What sets the return
+
+Recovery is not a fixed-price redemption. A participant's outcome depends on:
+
+- the target round's Recovery ETH;
+- total POTATO committed by everyone;
+- the account's commitment; and
+- the canonical market value and other uses of POTATO.
+
+Committing removes the tokens from ordinary market use and exposes them to the target round's result.
+
+## No-commitment rounds
+
+If nobody commits, the Recovery ETH rolls forward to the next round. It is not sent to Treasury or trapped.
+
+Next: [commitment and claim mechanics](/docs/recovery/commitments-and-claims).

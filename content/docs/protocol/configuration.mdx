@@ -1,0 +1,62 @@
+---
+id: configuration
+slug: protocol/configuration
+label: Configuration
+title: Configuration and round snapshots
+description: Governed economic inputs, validation constraints, and the rule that protects active-round terms.
+updated: 2026-09-16
+order: 61
+---
+
+`ProtocolConfig` holds the game defaults used for future rounds:
+
+```solidity
+struct ProtocolConfig {
+    uint256 startingPrice;
+    uint16 priceIncreaseBps;
+    uint256 roundTimeout;
+    uint256 roundEmissionBudget;
+    uint16 emissionStepBps;
+    uint256 emissionVestingDuration;
+    uint16 winnerBps;
+    uint16 nextRoundWinnerBps;
+    uint16 recoveryBps;
+    uint16 treasuryBps;
+    uint16 recoveryBurnBps;
+    uint16 recoveryTreasuryBps;
+    uint16 buybackBps;
+    uint16 operatorPurchaseBps;
+    uint256 roundTimeoutDecay;
+    uint256 minimumRoundTimeout;
+}
+```
+
+## Snapshot boundary
+
+When Round N activates, it snapshots the complete current configuration for Round N+1. A governance update cannot rewrite the active round or the already-open next-round Recovery market. It affects later unsnapshotted rounds.
+
+`Round.activated` is the lifecycle marker; a zero emission budget is valid and is not used as a sentinel.
+
+## Validation
+
+- All BPS values are at most 10,000.
+- Winner, next-Winner, Recovery, Treasury, buyback, and Operator purchase shares sum to exactly 10,000.
+- Recovery burn and Treasury shares sum to exactly 10,000.
+- Starting price, initial timeout, minimum timeout, and vesting duration are nonzero.
+- Minimum timeout cannot exceed initial timeout.
+- Timeout decay cannot exceed initial timeout.
+- Initial timeout fits the `uint64` deadline-safety bound.
+
+Zero price growth, timeout decay, emission step, and round emission budget are allowed.
+
+## Separate configuration domains
+
+The hook fee and Operator fee share live in the hook, not `ProtocolConfig`. The installed hook caps the total fee at 200 BPS and allows 0–100% of that fee to route to Operators.
+
+Buyback maximum spend, caller reward, and block delay live in `BuybackConfig`. The installed facet caps caller reward at 100 BPS.
+
+Market dependencies and the POTATO seed are configurable only before market launch. Treasury recipient, distributor permissions, reward allocator, guardian, and hook ownership are independent controls.
+
+## Displaying live economics
+
+For the current game, read `getRound(currentRoundId).config`. For future defaults, read `protocolConfig()`. Do not label governed defaults as the active round's terms unless both values match.

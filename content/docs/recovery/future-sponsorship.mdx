@@ -1,0 +1,54 @@
+---
+id: future-sponsorship
+slug: recovery/future-sponsorship
+label: Future sponsorship
+title: Sponsor future Winner and Recovery pots
+description: How anyone can fund named future rounds for promotions without rewriting active-round accounting.
+updated: 2026-09-16
+order: 22
+---
+
+Anyone may add ETH to the Winner reserve, Recovery reserve, or both for **any future round**. This supports announced promotional rounds without modifying a game already in progress.
+
+## Funding entry points
+
+```solidity
+fundWinnerReserve(targetRoundId) payable
+fundRecoveryReserve(targetRoundId) payable
+fundRoundReserves(targetRoundId, winnerAmount, recoveryAmount) payable
+```
+
+The combined call requires `winnerAmount + recoveryAmount == msg.value`. At least one funded amount must be positive. Active and past targets revert.
+
+Funding is additive, permissionless, available during the global pause, and irreversible.
+
+## What sponsorship does not do
+
+Funding a distant round does not:
+
+- activate that round;
+- alter its eventual price or percentage configuration;
+- make a POTATO commitment for the sponsor;
+- change the current round; or
+- execute a buyback.
+
+The named reserve becomes a live pot only when its round activates.
+
+## Aggregate vs sponsored
+
+`roundFunding(roundId)` returns:
+
+```text
+winnerReserve
+recoveryReserve
+winnerSponsoredEth
+recoverySponsoredEth
+```
+
+The first pair are total pending reserves. The second pair include only explicit permissionless contributions. Subtracting sponsored from aggregate shows automatic protocol/game funding such as the genesis seed, first-Grab funding, and configured next-round allocation.
+
+This distinction should be visible in analytics. Labeling all reserved ETH “sponsorship” misrepresents player-funded mechanics.
+
+## Announcing a future round
+
+A promotion can cite a target round and its onchain reserve. Participants should still verify current contract state: the funding is real, but the round's eventual activation time depends on the preceding games.

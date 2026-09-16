@@ -1,0 +1,63 @@
+---
+id: verification
+slug: reference/verification
+label: Verification
+title: Verify a Burntato deployment
+description: A source-to-chain checklist for addresses, selectors, economics, custody, market bindings, and live operating state.
+updated: 2026-09-16
+order: 82
+---
+
+Verification is a sequence of independent claims. Source verification on an explorer does not prove current roles, correct initialization, or compatibility with a frontend.
+
+## 1. Establish provenance
+
+- Pin chain ID and a trusted RPC.
+- Read the deployment manifest and recorded source commit.
+- Require nonempty bytecode at the Diamond, hook, router, and named external dependencies.
+- Compare runtime code hashes where the manifest provides them.
+- Confirm deployment receipts succeeded.
+
+## 2. Inspect the Diamond
+
+- Resolve installed selectors through the loupe.
+- Confirm facet addresses match the intended release.
+- Read `foundationConfigured()`, `purchasesInitialized()`, `paused()`, and `protocolFinalized()`.
+- Read authority, guardian, Treasury recipient, reward allocator, and distributor state.
+- Compare `protocolConfig()` with intended future defaults and active `Round.config` separately.
+
+## 3. Inspect accounting
+
+- Reconcile the current round, named future reserves, aggregate reserve liabilities, Treasury claims, buyback reserve, Recovery commitments, and Treasury reward escrow.
+- Confirm explicit sponsorship is not conflated with automatic game allocations.
+- Remember that the raw Diamond ETH balance can include untracked direct transfers.
+
+## 4. Inspect the market
+
+- Confirm PoolKey currencies, PoolManager, hook, tick spacing, and pool ID.
+- Compare `marketCurveHash()` and position count.
+- Confirm launch state and dead-address position ownership.
+- Read hook owner, fee recipient, fee BPS, Operator router/share, and external-buy gate.
+- Verify the Diamond's canonical hook and PoolManager bindings.
+
+## 5. Inspect Operators
+
+- Confirm router bindings to Burntato, the Operator NFT, and Activation Registry.
+- Confirm the NFT and registry point back to the expected canonical relationship.
+- Read total registered weight and count.
+- Verify purchase and hook revenue route to the intended router.
+
+## 6. Exercise representative flows
+
+On a disposable or explicitly approved environment, prove:
+
+- an exact-price Grab and stale-price failure;
+- holder-time emission at zero, partial, and full vesting;
+- expiry, settlement, Winner claim, and Recovery claim;
+- allowed and restricted POTATO movement;
+- canonical sell and, when enabled, buy routes;
+- buyback funding and positive execution;
+- Operator register, sync/invalidation, and batch claim; and
+- pause activation plus authority-only unpause.
+
+Report each layer honestly: local tests, CI, fork qualification, live readback, explorer verification, and production deployment are different evidence.

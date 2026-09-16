@@ -1,0 +1,49 @@
+---
+id: holder-emissions
+slug: game/holder-emissions
+label: Holder emissions
+title: Holder-time POTATO emissions
+description: Why elapsed holder time—not Grab count—determines how much new POTATO a round can issue.
+updated: 2026-09-16
+order: 11
+---
+
+Every round begins with an independent base-emission budget. A new holder receives a maximum opportunity calculated from what remains:
+
+```text
+maxReward = floor(remainingEmission * emissionStepBps / 10_000)
+earned = floor(maxReward * min(heldSeconds, vestingDuration) / vestingDuration)
+```
+
+Only `earned` is deducted and minted. The unearned portion stays in the same round and informs the next holder's opportunity.
+
+## What advances emission
+
+- Elapsed holder time advances vesting.
+- A later Grab finalizes the outgoing holder.
+- Settlement finalizes an unresolved last holder while unpaused.
+- A fully vested current opportunity can be materialized before either event.
+
+Purchase count by itself does not consume the budget. Cycling at the same timestamp earns zero.
+
+## Default curve
+
+The fresh default budget is 10,000 POTATO, the step is 10%, and vesting lasts four minutes. Fully vested opportunities therefore leave:
+
+```text
+10,000 → 9,000 → 8,100 → 7,290 → ...
+```
+
+The first holder can earn at most 1,000 POTATO. If held for two minutes, that holder earns 500 POTATO; after four minutes, the full 1,000 POTATO.
+
+## Materializing a mature opportunity
+
+`materializeMaturedEmission()` is permissionless once the current opportunity has fully vested. It does not change the holder, price, or deadline. The finalized flag prevents a second mint.
+
+During the global emergency pause, new materialization and central protocol minting revert.
+
+## Unused budget
+
+Unused base emission is not force-minted, rolled into the next round, sent to Treasury, or added to Recovery. A new round starts with its own snapshotted budget.
+
+Treasury reward schedules use a parallel holder-time curve but transfer pre-funded POTATO rather than minting new supply. See [Treasury rewards](/docs/potato/treasury-rewards).

@@ -1,0 +1,53 @@
+---
+id: faq
+slug: start/faq
+label: Common questions
+title: Common questions
+description: Direct answers to the questions players and token holders are most likely to ask.
+updated: 2026-09-16
+order: 4
+---
+
+## Do I need POTATO to play?
+
+No. A Grab uses ETH. POTATO is earned through holder time, acquired through the canonical market when external buys are enabled, and used in Recovery.
+
+## Does every Grab mint POTATO?
+
+No. Holder time determines emission. A same-timestamp pass earns zero; a partially vested holder earns only the vested portion. Purchase count changes the price and urgency schedule but does not itself consume emission.
+
+## Can the next Grab cost more than the current Winner pot?
+
+Yes. The next price and Winner pot are different quantities. Each Grab is divided among several destinations, while price increases under its own configured rule. Players should evaluate the displayed state, not assume the Winner pot always exceeds the next price.
+
+## Is Round 1 prefunded?
+
+A fresh default deployment funds an initial Winner reserve at 105% of its starting price, then applies that reserve when Round 1 activates. A particular deployment may use different governed inputs; read the live round.
+
+## Can someone add ETH to a running round?
+
+The permissionless reserve functions target future rounds, not an already-active round. This makes announced sponsored rounds visible in advance without changing current-round obligations.
+
+## Can I sponsor a round far in the future?
+
+Yes. Winner and Recovery ETH can target any future round. POTATO Recovery commitments are different: they target only `currentRoundId + 1`.
+
+## Can I transfer POTATO to another wallet?
+
+Ordinary wallet-to-wallet transfers revert. Supported movement includes protocol escrow and claims, canonical pool transfers, governed distributor paths, authority paths, minting, and burning.
+
+## Are POTATO buys always available?
+
+No. Fresh deployments start with external pool buys disabled. Sells and the protocol buyback path remain available once there is ETH-side pool inventory. Hook governance can enable or disable external buys repeatedly.
+
+## Does settlement pay everyone automatically?
+
+No. Settlement records outcomes and makes ETH claimable. Winner and Recovery participants claim separately.
+
+## Does finalizing the protocol freeze everything?
+
+No. `finalizeProtocol()` permanently disables Diamond cuts only. Economic setters, recipients, pause administration, hook ownership, and other defined controls remain unless their independent authority is removed.
+
+## Is profit guaranteed?
+
+No. Burntato is an onchain game and market. ETH paid for a Grab is distributed by the protocol, market prices move, other players choose when to act, and Recovery returns depend on both ETH funding and total committed POTATO.

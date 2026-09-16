@@ -1,0 +1,46 @@
+---
+id: operators-overview
+slug: operators/overview
+label: Operator rewards
+title: Burntato rewards for Statics Operators
+description: How the standalone router shares purchase and swap revenue by registered activation weight.
+updated: 2026-09-16
+order: 50
+---
+
+Burntato can route two native-ETH revenue streams to a standalone Operator rewards contract:
+
+- the configured Operator share of second-and-later Grabs; and
+- the configured Operator share of the canonical hook's existing swap fee.
+
+The router does not modify Statics and does not custody funds inside Statics. It reads the external Operator NFT and its canonical Activation Registry.
+
+## Weight, not NFT count
+
+A registered Operator's reward weight is its stored activation multiplier. A wallet's approximate pool share is:
+
+```text
+wallet registered weight / totalRegisteredWeight
+```
+
+Two wallets with the same number of NFTs can have different reward shares if their activation multipliers differ.
+
+`totalRegisteredOperators()` reports the current number of registrations. It is not “the percent of your Operators registered.”
+
+## Prospective registration
+
+Registration starts at the current reward index and cannot claim earlier revenue. Only the current NFT owner can register.
+
+Higher activation weight applies prospectively after synchronization. A transfer or lower observed multiplier invalidates the registration and redistributes its unpaid whole and fractional entitlement over the remaining registered weight.
+
+A new owner does not inherit the old registration; they register explicitly.
+
+## Revenue with no registrations
+
+Revenue that arrives with zero registered weight, and value that cannot be redistributed after sole-registration invalidation, becomes claimable by Burntato's current Treasury recipient.
+
+## Independent configuration
+
+The purchase router is fixed in the Diamond deployment binding. The hook's Operator router and share are administered by hook ownership and affect future hook fees only. Rotating away from a router does not erase claims already recorded there.
+
+Next: [register, sync, and claim](/docs/operators/register-and-claim).

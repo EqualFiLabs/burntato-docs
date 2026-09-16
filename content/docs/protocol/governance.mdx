@@ -1,0 +1,56 @@
+---
+id: governance
+slug: protocol/governance
+label: Governance
+title: Authority, guardian, pause, and finalization
+description: The exact powers that administer Burntato and the controls that remain after Diamond finalization.
+updated: 2026-09-16
+order: 62
+---
+
+Burntato does not require a built-in timelock. Deployment assigns one Diamond `authority`, which may be an EOA, Safe, or governance contract. The hook and, in self-contained environments, PoolManager ownership are separate roles.
+
+## Diamond authority
+
+While nonzero, authority can:
+
+- modify Diamond selectors until finalization;
+- update future protocol defaults;
+- set the Diamond Treasury recipient and explicit POTATO distributors;
+- configure buyback limits and the reward allocator;
+- appoint or remove the guardian;
+- pause or unpause;
+- configure the market before launch; and
+- transfer or safely relinquish authority.
+
+Fresh deployments are configured and unpaused but purchases remain inactive until authority calls `initializePurchases()` once.
+
+## Guardian
+
+The guardian is containment-only. It may change the global pause from false to true but cannot clear it. Only authority can unpause.
+
+While paused, Burntato blocks:
+
+- new Grabs and Recovery commitments;
+- holder-emission materialization and protocol minting;
+- round settlement; and
+- Diamond Winner, Recovery, Treasury ETH, and Treasury POTATO claims.
+
+The pause deliberately leaves views, permitted token actions, self-burning, eligible stalled-Recovery withdrawals, market swaps and launch, buybacks and reserve funding, reward scheduling, and administration available.
+
+## Finalization
+
+`finalizeProtocol()` permanently disables `diamondCut`. It does **not** freeze economics, clear the guardian, unpause, renounce authority, transfer hook ownership, or disable other defined administration.
+
+This distinction should be explicit in governance interfaces: “Diamond cuts finalized” is accurate; “protocol immutable” is not.
+
+## Safe authority renunciation
+
+Authority can become zero only after purchases are initialized, guardian is zero, and the protocol is unpaused. The safe sequence is therefore:
+
+1. initialize purchases;
+2. remove guardian;
+3. clear the pause; and
+4. set authority to the zero address.
+
+Independent hook and PoolManager ownership do not change automatically.

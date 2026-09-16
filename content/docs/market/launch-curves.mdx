@@ -1,0 +1,49 @@
+---
+id: launch-curves
+slug: market/launch-curves
+label: Launch curves
+title: Six-band locked launch liquidity
+description: How the genesis POTATO allocation becomes 56 permanent, single-sided Uniswap v4 positions.
+updated: 2026-09-16
+order: 41
+---
+
+The reviewed launch profile reserves 100 million POTATO by default and divides it across six overlapping price bands. It creates 56 Uniswap v4 positions without requiring launch ETH.
+
+## Allocation profile
+
+| Band | Share of POTATO | Positions |
+| ---: | ---: | ---: |
+| 1 | 2.5% | 11 |
+| 2 | 7.5% | 11 |
+| 3 | 12.5% | 11 |
+| 4 | 20% | 11 |
+| 5 | 42.5% | 11 |
+| 6 | 15% | 1 |
+| **Total** | **100%** | **56** |
+
+The fixed profile uses tick spacing 60 and initial tick 170,280. `marketCurves()` exposes the canonical bands and `marketCurveHash()` provides a compact identity for deployment checks.
+
+## Single-sided start
+
+The initial square-root price is set to the profile's upper tick. Every position begins POTATO-sided, so `launchMarket()` is nonpayable and consumes no Treasury ETH.
+
+ETH-side inventory arrives later through buybacks and ordinary market activity. External buys begin disabled so governance can establish liquidity before opening that direction to users.
+
+## Permanent positions
+
+Every position NFT is minted directly to:
+
+```text
+0x000000000000000000000000000000000000dEaD
+```
+
+The launch liquidity cannot be withdrawn or repositioned. There is no owner-held NFT, recovery key, or protocol fee in the native LP layer. The Burntato hook fee is the revenue path.
+
+## Validation boundaries
+
+Configuration rejects an allocation that overflows the aggregate amount domain or produces a zero or overflowing derived position. A second launch or post-launch reconfiguration reverts.
+
+:::note Price is emergent
+The bands define available liquidity, not a guaranteed future price. Buybacks, sells, external buys after enablement, and Recovery demand all change the realized market state.
+:::

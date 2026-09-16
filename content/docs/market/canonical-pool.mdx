@@ -1,0 +1,47 @@
+---
+id: canonical-pool
+slug: market/canonical-pool
+label: Canonical pool
+title: The canonical POTATO/ETH pool
+description: Pool identity, bilateral hook fees, external-buy gating, and permanent liquidity constraints.
+updated: 2026-09-16
+order: 40
+---
+
+Burntato defines one canonical native ETH/POTATO Uniswap v4 pool. Native ETH is currency0, the Burntato Diamond is currency1, the native LP fee is zero, and the configured hook supplies protocol fee and transfer behavior.
+
+## Structural identity
+
+Before launch, authority can correct the market dependencies and reserved POTATO allocation. Launch then fixes the PoolKey, PoolManager, hook, tick spacing, range, allocation, and locked positions for that market.
+
+Useful Diamond views are:
+
+- `canonicalPoolKey()`
+- `marketConfig()`
+- `marketCurves()`
+- `marketCurveHash()`
+- `marketState()` and `marketReady()`
+- `lockedLpRecipient()`
+
+The hook separately exposes its token, PoolManager, tick spacing, owner, fee recipient, fee rate, Operator routing, deployment block, and external-buy state.
+
+## Bilateral hook fee
+
+The fee applies to both directions and is capped at 200 BPS by the installed hook.
+
+- On a buy, the hook retains a fraction of gross POTATO output, converts it once to ETH without recursively charging its internal conversion, then allocates the realized ETH.
+- On a sell, the hook retains a fraction of gross ETH output and allocates it directly.
+
+The Operator share divides this existing fee; it does not add a second fee. Division dust goes to the hook's Treasury fee recipient.
+
+Hook revenue bypasses Diamond claims and is not automatically added to liquidity, Winner, Recovery, or buyback accounting.
+
+## External-buy gate
+
+Fresh deployments begin with external pool buys disabled. Exact-input POTATO sells can remain available once the pool has ETH inventory, and the protocol's canonical buyback has a privileged fee-free buy path.
+
+Hook ownership may toggle external buys repeatedly. This control remains independent of Diamond finalization.
+
+## Swap constraints
+
+The hook rejects foreign PoolKeys, foreign initialization, exact-output swaps, zero-amount swaps, and unauthorized liquidity addition. Integrations should use exact-input routes and refresh live hook state immediately before quoting.

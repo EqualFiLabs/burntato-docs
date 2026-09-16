@@ -1,0 +1,53 @@
+---
+id: security-model
+slug: protocol/security-model
+label: Security model
+title: Security model and invariants
+description: The accounting, custody, market, liveness, and administration properties integrations should preserve.
+updated: 2026-09-16
+order: 63
+---
+
+Burntato's safety depends on explicit accounting boundaries, snapshotted participant terms, constrained token movement, and narrowly scoped external integrations.
+
+## Accounting invariants
+
+- Every later-Grab split equals the exact purchase price; Treasury receives rounding dust.
+- First-Grab ETH goes entirely to the following round's Winner reserve.
+- A reserve is applied to its named round exactly once.
+- Raw ETH does not silently become a Winner, Recovery, or buyback liability.
+- Recovery consumes every committed POTATO base unit once.
+- The final Recovery claimant receives remaining division dust.
+- A holder opportunity can finalize only once.
+
+## Participant-term invariants
+
+- An active round uses its own `RoundConfig`.
+- The next Recovery target is snapshotted before commitments open.
+- Later governance changes apply only to unsnapshotted rounds.
+- Stored deadlines and prices, rather than client reconstructions, are authoritative.
+
+## Token and market invariants
+
+- Ordinary underlying POTATO transfers revert.
+- Protocol and PoolManager movement authorizations are exact and transaction-scoped.
+- Only the canonical hook and PoolKey may operate the configured market path.
+- Exact-output and zero-amount swaps are rejected.
+- Launch position NFTs are irrecoverably sent to the dead address.
+- Market launch is single-use and post-launch configuration is closed.
+
+## Liveness controls
+
+Permissionless settlement, reserve funding, buyback execution, and Operator synchronization reduce dependence on a privileged caller. Pull claims let recipients choose when and where to receive value.
+
+The 30-day holderless-predecessor escape prevents Recovery commitments from remaining indefinitely stranded before a game ever begins. Once play starts, the ordinary settlement path is binding.
+
+## Administrative assumptions
+
+Before authority renunciation, users trust the configured authority for selector upgrades and future economic defaults. Hook ownership separately controls fees, fee recipients, Operator routing, and the external-buy gate. On a canonical Robinhood deployment, PoolManager governance is external to Burntato.
+
+Diamond finalization removes selector upgrades but not these other roles. Verify each address and state independently.
+
+:::warning Documentation is not an audit
+These are intended properties and integration boundaries. Review deployed bytecode, current roles, source provenance, test evidence, and any independent security assessment before treating a deployment as qualified.
+:::

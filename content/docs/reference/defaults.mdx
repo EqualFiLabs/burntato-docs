@@ -1,0 +1,55 @@
+---
+id: defaults
+slug: reference/defaults
+label: Fresh defaults
+title: Fresh-deployment defaults
+description: The current source defaults for a new self-contained deployment, distinct from any live deployment overrides.
+updated: 2026-09-16
+order: 80
+---
+
+These are the current source defaults for a fresh self-contained deployment. They are operational inputs, not immutable protocol constants. Always read a deployed round and its governance state.
+
+## Game and Recovery
+
+| Setting | Fresh default |
+| --- | ---: |
+| Starting Grab price | 0.01 ETH |
+| Price increase | 1,000 BPS (10%) |
+| Initial countdown reset | 1 hour |
+| Decay per successful Grab | 5 minutes |
+| Minimum reset | 5 minutes |
+| Base round emission | 10,000 POTATO |
+| Holder opportunity | 1,000 BPS (10% of remaining) |
+| Vesting duration | 4 minutes |
+| Grab 2+ split | 25% Winner / 2% next Winner / 40% Recovery / 23% Treasury / 10% buyback / 0% Operators |
+| First Grab | 100% to next-round Winner reserve |
+| Initial Winner reserve | 0.0105 ETH (105% of starting price) |
+| Recovery POTATO | 90% burn / 10% Treasury |
+
+## Market and buybacks
+
+| Setting | Fresh default |
+| --- | ---: |
+| POTATO launch allocation | 100,000,000 POTATO |
+| Launch profile | 6 bands / 56 locked positions |
+| Tick spacing / initial tick | 60 / 170,280 |
+| Native LP fee | 0 |
+| Bilateral hook fee | 100 BPS (1%) |
+| Maximum hook fee | 200 BPS (2%) |
+| External buys | Disabled |
+| Maximum buyback slice | 2 ETH |
+| Buyback caller reward | 50 BPS (0.5% of actual ETH spent) |
+| Maximum caller reward | 100 BPS (1%) |
+| Buyback delay | 1 block |
+
+## Lifecycle
+
+- Deployment completes configured and unpaused.
+- Purchases begin inactive and require one authority call to `initializePurchases()`.
+- The initial Treasury recipient is enabled as a POTATO distributor.
+- Self-contained deployment keeps Operator rewards disabled unless a deployment profile configures them.
+
+## Robinhood profile difference
+
+The committed Robinhood testnet instance uses a 25% Winner / 30% Recovery / 20% nominal Treasury / 10% buyback / 15% Operators split and sends 40% of its existing 1% hook fee to Operators. It is a historical deployment with an older source commit; see [Deployments](/docs/reference/deployments).

@@ -1,0 +1,58 @@
+---
+id: money-flows
+slug: start/money-flows
+label: Money flows
+title: Follow the money
+description: A plain-language map of Grab revenue, pots, reserves, fees, buybacks, and claims.
+updated: 2026-09-16
+order: 3
+---
+
+Burntato keeps separate accounting buckets. ETH in the Diamond is not one undifferentiated balance, and sending ETH directly does not credit a pot or reserve.
+
+## The first Grab
+
+The complete first purchase price funds the **next round's Winner reserve**. It does not enter the current Winner pot, Recovery pool, Treasury, buyback reserve, or Operator router.
+
+This creates opening funding for the next game even when a round ends after only one player.
+
+## Grab two and later
+
+Later purchases use the active round's six configured shares:
+
+| Destination | Purpose |
+| --- | --- |
+| Current Winner | Paid to the final holder after settlement. |
+| Next Winner | Builds the following round's opening Winner pot. |
+| Current Recovery | Paid pro rata to POTATO commitments targeting this round. |
+| Treasury | Becomes pull-claimable by the configured Treasury recipient. |
+| Buyback reserve | Funds permissionless POTATO purchases into Treasury inventory. |
+| Operators | Is queued to the standalone Operator rewards router. |
+
+Each proportional amount rounds down. Treasury receives the deterministic remainder so the six outputs always equal the exact purchase price.
+
+## A reserve is not yet a pot
+
+Future-round funding remains in a named reserve until that round activates. Activation moves exactly that round's Winner and Recovery reserves into its live pools.
+
+`roundFunding(roundId)` separates permissionless sponsorship from total reserves. This matters in UIs: automatic game allocations are not “sponsorship.”
+
+## Market fees are separate
+
+The canonical Uniswap v4 hook charges a bilateral fee on POTATO buys and sells. That realized ETH never enters Diamond game accounting.
+
+The hook sends its governed Operator share to the rewards router and its remainder directly to the hook's Treasury fee recipient. Changing that split does not change the total trader fee.
+
+## Buybacks
+
+Purchase revenue and direct contributions can fund the tracked buyback reserve. Anyone can execute a permitted buyback after launch and cooldown. The Diamond spends ETH from that reserve, sends acquired POTATO directly to the current Treasury recipient, and may reward the caller from actual ETH spent.
+
+## Claims are pull-based
+
+Winner, Recovery, Treasury ETH, Treasury POTATO, and Operator rewards stay claimable until an eligible caller pulls them. A successful claim changes only its own tracked liability.
+
+:::warning Raw transfers are not funding calls
+A plain ETH transfer to the Diamond increases its balance but does not credit Winner, Recovery, or buyback accounting. Use the explicit funding function for the bucket you intend.
+:::
+
+See [Configuration](/docs/protocol/configuration) for the constraints and [Defaults](/docs/reference/defaults) for the fresh-deployment profile.

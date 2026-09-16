@@ -1,0 +1,53 @@
+---
+id: commitments-and-claims
+slug: recovery/commitments-and-claims
+label: Commitments and claims
+title: Recovery commitments and claims
+description: The exact lifecycle of POTATO escrow, exceptional withdrawals, settlement, and pro-rata ETH claims.
+updated: 2026-09-16
+order: 21
+---
+
+Recovery has four distinct stages: open commitment, locked commitment, target settlement, and claim.
+
+## Commit
+
+`commitRecovery(amount)` requires a positive amount and targets only the next round. Multiple commitments from one account add together. The protocol records both account and aggregate target weight.
+
+Commitment is rejected while the global protocol pause is active.
+
+## Lock and the holderless escape
+
+Normally, a commitment remains locked through its target round. There is one liveness exception when the activated predecessor remains completely holderless.
+
+The first target commitment starts a shared 30-day withdrawal deadline. After it passes, `withdrawStalledRecovery(targetRoundId)` returns an account's complete commitment only while:
+
+- the predecessor is still current and has never had a holder;
+- the target is still inactive; and
+- the predecessor's first purchase has never occurred.
+
+A later commitment does not restart the deadline. The final withdrawal clears it; a later first commitment can start a new shared period. The escape remains callable during the global pause.
+
+:::warning The first predecessor Grab closes the escape permanently
+Once the predecessor receives its first holder, ordinary settlement is the only path for those target commitments.
+:::
+
+## Settle
+
+At target settlement, Burntato burns and routes all committed POTATO using that round's snapshotted Recovery split. This establishes the final `recoveryPool`, `totalCommitted`, and claim state.
+
+## Claim
+
+Each committer calls:
+
+```solidity
+claimRecovery(roundId, recipient)
+```
+
+Claims are pull-based, single-use, and unavailable during the global pause. An ordinary pro-rata result may round to zero and still consume the account's complete weight. The final outstanding commitment receives the exact ETH remainder.
+
+Use both `claimableRecovery(roundId, account)` and `recoveryClaimed(roundId, account)`. A zero preview can mean no claim, already claimed, unsettled, or a valid ordinary claim that rounds to zero.
+
+## Indexing state
+
+Track `RecoveryCommitted`, `StalledRecoveryWithdrawn`, `RoundSettled`, and `RecoveryClaimed`. Contract views remain authoritative when logs and current state differ because of transaction ordering.

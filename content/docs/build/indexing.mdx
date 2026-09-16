@@ -1,0 +1,53 @@
+---
+id: indexing
+slug: build/indexing
+label: Indexing
+title: What needs an indexer?
+description: Which Burntato views are enough for live UX and which historical or ownership experiences need event indexing.
+updated: 2026-09-16
+order: 71
+---
+
+The current game can be rendered from contract views. Historical analytics and scalable Operator discovery benefit from an indexer.
+
+## No indexer required
+
+Direct reads are enough for:
+
+- the active round, holder, next price, deadline, pots, and emission;
+- a named historical round from `getRound(roundId)`;
+- current and future reserve totals;
+- one account's Recovery commitment and claim state;
+- current market configuration and buyback reserve;
+- one known Operator registration and reward preview; and
+- governance, pause, role, and purchase-initialization state.
+
+These should remain the final authority for transaction eligibility.
+
+## Indexer recommended
+
+Use event indexing for:
+
+- paginated round and Grab history;
+- aggregate protocol volume and revenue charts;
+- complete sponsorship history by funder and target round;
+- Recovery participant lists;
+- Treasury reward schedule history;
+- all Operators currently or historically owned by a wallet; and
+- cross-contract hook trade and Operator revenue timelines.
+
+## Operator discovery
+
+ERC-721 contracts do not guarantee enumerable ownership. Discover candidates from durable `Transfer` logs beginning at the Operator NFT deployment block, then confirm every candidate with live `ownerOf`.
+
+Do not impose an arbitrary recent-block lookback. Once an Operator's mint or transfer falls outside the window, it disappears from the UI even though ownership is unchanged.
+
+## Reorg and reconciliation
+
+Store block number, block hash, transaction hash, and log index. Delay final analytics as appropriate for the chain, rewind on hash mismatch, and make handlers idempotent.
+
+Current-state screens should reconcile indexed candidates with contract reads. Events describe transitions; views decide whether an action is valid now.
+
+## Event domains
+
+The Diamond, swap-fee hook, Operator router, and external Statics contracts are separate emitters. Key data such as a router trade sender may be an infrastructure contract rather than the end user's wallet, so preserve transaction origin context where the chain and product allow it.

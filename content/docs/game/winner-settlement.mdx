@@ -1,0 +1,43 @@
+---
+id: winner-settlement
+slug: game/winner-settlement
+label: Winner and settlement
+title: Settlement and Winner claims
+description: What settlement finalizes, who may call it, and how the last holder claims the Winner pot.
+updated: 2026-09-16
+order: 12
+---
+
+Settlement converts an expired active round into immutable claim state. It is permissionless, but it can run only after the stored deadline and while the protocol is unpaused.
+
+## Settlement effects
+
+`settleRound()`:
+
+1. finalizes the unresolved last-holder emission;
+2. records the current holder as the winner;
+3. fixes the Winner and Recovery pools;
+4. consumes Recovery commitments under the target round's snapshotted burn/Treasury split; and
+5. marks the round settled.
+
+The `RoundSettled` event records the winner, both ETH pools, aggregate POTATO commitment, burned POTATO, and Treasury POTATO.
+
+## Winner claim
+
+The recorded winner calls:
+
+```solidity
+claimWinner(roundId, recipient)
+```
+
+The explicit recipient can be a different safe wallet, but cannot be a prohibited protocol custody address. The round can be claimed only once.
+
+Settlement does not automatically send ETH. This avoids combining an unrestricted settlement call with a winner-controlled recipient choice.
+
+## Recovery without commitments
+
+If a settled round has no POTATO commitments, its Recovery ETH does not disappear. It rolls into the following round's Recovery accounting. Base emission never rolls with it.
+
+## UI guidance
+
+Display `settled`, `winnerClaimed(roundId)`, the recorded holder, and the Winner pool independently. “Round ended,” “settled,” and “claimed” are three different states.

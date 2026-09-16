@@ -1,0 +1,45 @@
+---
+id: architecture
+slug: protocol/architecture
+label: Architecture
+title: Protocol architecture
+description: The EIP-2535 Diamond, namespaced storage, canonical hook, Operator router, and trust boundaries.
+updated: 2026-09-16
+order: 60
+---
+
+Burntato presents one primary integration address: `BurntatoDiamond`. Gameplay, POTATO, Recovery, settlement, claims, market views, buybacks, Treasury rewards, and governance selectors route through this EIP-2535 Diamond.
+
+## Diamond facets
+
+| Facet | Responsibility |
+| --- | --- |
+| `DiamondCutFacet` | Add, replace, or remove selectors until finalized. |
+| `DiamondLoupeFacet` | Inspect installed facets and ERC-165 support. |
+| `GovernanceFacet` | Authority, guardian, pause, defaults, recipients, and purchase activation. |
+| `GameFacet` | Rounds, Grabs, reserves, current emission, and purchase routing. |
+| `RecoveryFacet` | Forward POTATO commitments, reserve funding, and stalled exits. |
+| `SettlementFacet` | Expired-round settlement. |
+| `ClaimsFacet` | Winner, Recovery, and Treasury pull claims. |
+| `PotatoTokenFacet` | ERC-20, Permit, burn, distributors, and exact movement authorization. |
+| `MarketFacet` | Canonical v4 market configuration, launch, curves, and PoolKey. |
+| `BuybackFacet` | Buyback reserve, configuration, and canonical swaps. |
+| `TreasuryRewardsFacet` | Pre-funded future reward schedules. |
+
+Shared state lives in collision-resistant namespaced libraries. Integrators should call interfaces at the Diamond address, not facet implementations.
+
+## External contracts
+
+The **BurntatoSwapFeeHook** is a separate owned contract bound immutably to POTATO, its PoolManager, and tick spacing. It enforces canonical-pool rules, collects the bilateral fee, splits realized ETH, and controls external buys.
+
+The **BurntatoOperatorRewardsRouter** is a separate immutable integration bound to the Burntato Diamond, Statics Operator NFT, and Activation Registry. It accounts for revenue outside Diamond storage.
+
+Uniswap v4's PoolManager and PositionManager are external dependencies. On a self-contained local deployment Burntato deploys them; on Robinhood it validates and uses the canonical chain deployments.
+
+## One address, multiple assets and roles
+
+The Diamond is also the POTATO ERC-20 address and can custody POTATO and ETH liabilities. Internal accounting—not raw balance alone—distinguishes Winner, Recovery, Treasury, buyback, launch seed, commitments, and reward escrow.
+
+## Upgrade boundary
+
+Before finalization, the authority can change the selector table. `finalizeProtocol()` disables future Diamond cuts only. The hook, external PoolManager, Operator router, and defined economic administration have separate boundaries.

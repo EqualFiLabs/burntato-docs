@@ -1,0 +1,59 @@
+---
+id: rounds-and-grabs
+slug: game/rounds-and-grabs
+label: Rounds and Grabs
+title: Rounds, prices, and the countdown
+description: How a round activates, how each Grab changes price and time, and which state is authoritative.
+updated: 2026-09-16
+order: 10
+---
+
+Each round is a state machine with one current holder, one stored deadline, one next price, and its own snapshotted configuration.
+
+## Activation
+
+When a round activates, Burntato:
+
+- installs its already-snapshotted terms;
+- starts with the configured price and emission budget;
+- applies that round's Winner and Recovery reserves;
+- activates any Treasury-funded reward budget; and
+- snapshots the current governed defaults for the following round.
+
+An active round can initially be holderless. The countdown becomes meaningful after its first successful Grab.
+
+## Exact-price purchases
+
+`buyPotato()` accepts exactly `Round.nextPrice`. Overpayment and underpayment both revert. Integrations should simulate immediately before submission and handle a competing purchase as ordinary stale state.
+
+After a successful purchase:
+
+```text
+increase = ceil(price * priceIncreaseBps / 10_000)
+nextPrice = price + increase
+```
+
+Ceiling division guarantees a positive base-unit increase whenever `priceIncreaseBps` is nonzero.
+
+## Diminishing reset duration
+
+The duration uses the purchase index *before* it increments:
+
+```text
+maximumReduction = roundTimeout - minimumRoundTimeout
+reduction = min(purchaseIndex * roundTimeoutDecay, maximumReduction)
+resetDuration = roundTimeout - reduction
+deadline = block.timestamp + resetDuration
+```
+
+With fresh defaults, successful Grabs reset to 60, 55, 50 minutes, and so on until the five-minute floor. Every later Grab resets to five minutes. A new round starts over at the initial duration.
+
+Read the stored `Round.deadline`; do not reconstruct it from event ordering or a local clock.
+
+## The first-purchase rule
+
+Purchase index zero sends its entire price to the following round's Winner reserve. Later Grabs use the six-way configuration. This rule makes the next round's opening funding independent of whether the current round reaches a second purchase.
+
+## Expiry
+
+A Grab after the stored deadline reverts. Any account may then call `settleRound()`. Settlement and claiming are separate so no arbitrary caller can choose another user's claim recipient.

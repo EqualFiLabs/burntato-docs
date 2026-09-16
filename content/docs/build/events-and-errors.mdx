@@ -1,0 +1,65 @@
+---
+id: events-and-errors
+slug: build/events-and-errors
+label: Events and errors
+title: Events and custom errors
+description: A practical map of the protocol event stream and the errors clients should translate into useful messages.
+updated: 2026-09-16
+order: 72
+---
+
+Burntato uses custom errors and explicit events across the Diamond, hook, and Operator router. Decode by contract ABI and selector; do not infer failure only from a provider string.
+
+## Game and settlement events
+
+- `RoundStarted`
+- `PotatoPurchased`
+- `EmissionFinalized`
+- `WinnerReserveFunded`
+- `NextRoundWinnerFunded`
+- `WinnerReserveApplied`
+- `RoundSettled`
+- `WinnerClaimed`
+
+## Recovery and Treasury events
+
+- `RecoveryCommitted`
+- `StalledRecoveryWithdrawn`
+- `RecoveryReserveFunded`
+- `RecoveryReserveApplied`
+- `RecoveryClaimed`
+- `TreasuryEthClaimed`
+- `TreasuryPotatoClaimed`
+- `TreasuryRewardsAllocated`, `TreasuryRewardsCanceled`
+- `TreasuryRewardRoundActivated`, `TreasuryRewardFinalized`, `TreasuryRewardReleased`
+
+## Market and buyback events
+
+- `MarketConfigured`, `MarketCurvePinned`, `MarketLaunched`
+- `BuybackFunded`, `BuybackReserveFunded`, `BuybackExecuted`
+- hook `Trade`, `HookFee`, and `HookFeeAllocated`
+
+## Operator events
+
+- `RevenueQueued`, `ForcedRevenueRecognized`, `RevenueAccrued`
+- `OperatorRegistered`, `OperatorWeightUpdated`, `OperatorInvalidated`
+- `OperatorRewardClaimed`, `TreasuryRewardClaimed`
+
+## Errors worth translating
+
+| Error | User-facing interpretation |
+| --- | --- |
+| `IncorrectPayment(expected, received)` | The Grab price changed. Refresh and try again. |
+| `RoundExpired` | This round ended before the transaction landed. |
+| `RoundNotExpired` | The countdown is still active. |
+| `PurchasesNotInitialized` | Gameplay has not been opened on this deployment. |
+| `ProtocolPaused` | This action is disabled by the emergency pause. |
+| `TransferRestricted(from, to)` | POTATO cannot move through that route. |
+| `ExternalBuysDisabled` | User buys are not currently enabled. |
+| `BuybackTooSoon(nextBlock)` | Wait until the displayed block. |
+| `BuybackUnavailable` | Market or reserve state cannot support a buyback. |
+| `VestingIncomplete` | The current emission opportunity is not fully vested. |
+| `NothingToClaim` | No eligible balance is currently claimable. |
+| `RecoveryWithdrawalTooSoon(availableAt)` | The holderless escape deadline has not arrived. |
+
+Simulation errors should be shown before the wallet prompt when possible. A mined receipt with failure status is still a failed action even if the wallet returned a transaction hash.

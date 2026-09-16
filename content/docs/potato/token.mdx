@@ -1,0 +1,45 @@
+---
+id: potato-token
+slug: potato/token
+label: POTATO token
+title: POTATO token behavior
+description: Supply sources, transfer restrictions, Permit support, burning, and the exact paths that can move POTATO.
+updated: 2026-09-16
+order: 30
+---
+
+POTATO is an 18-decimal ERC-20 implemented behind the Burntato Diamond. It supports standard balances, allowances, and EIP-2612 Permit, but its transfer policy is intentionally narrower than a typical ERC-20.
+
+## Supply sources
+
+New POTATO can enter supply through base holder-time emission. Genesis also mints a separate configured allocation into Diamond custody for the canonical market. Treasury reward schedules distribute existing POTATO and do not mint.
+
+Recovery burns, voluntary self-burning, and other protocol burns reduce total supply.
+
+## Allowed movement
+
+The transfer hook permits:
+
+1. minting and burning;
+2. transfers where either endpoint is an administered distributor;
+3. transfers where either endpoint is the current protocol authority;
+4. an exact protocol transfer authorized and consumed during a Diamond self-call; and
+5. a PoolManager transfer covered by the canonical hook's exact transaction-scoped transient allowance.
+
+All other underlying POTATO transfers revert with `TransferRestricted`.
+
+:::warning Approval is not transfer permission
+`approve()` and Permit can install an allowance, but they do not bypass the transfer policy. A downstream `transferFrom()` must still use an allowed path.
+:::
+
+## Self-burning
+
+Any holder may call `burn(amount)`. This is the supported voluntary destruction path and reduces both the wallet balance and `totalSupply()` exactly.
+
+## Market wrappers are different assets
+
+Uniswap v4 ERC-6909 currency claims and third-party wrappers can represent POTATO exposure, but they are not underlying POTATO balances. Their transfers do not invoke POTATO's transfer hook and should not be presented as identical custody.
+
+## Integration reads
+
+Read `canonicalHook()`, `tokenPoolManager()`, `isDistributor(account)`, and `transientPoolManagerAllowance()` when diagnosing a movement. The transient allowance should be zero after a successful transaction.

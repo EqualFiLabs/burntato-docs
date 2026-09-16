@@ -1,0 +1,48 @@
+name: Docs CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout docs
+        uses: actions/checkout@v4
+
+      - name: Checkout current Burntato source
+        uses: actions/checkout@v4
+        with:
+          repository: EqualFiLabs/burntato
+          ref: main
+          path: .verification/burntato
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check current-source and deployment drift
+        env:
+          BURNTATO_PATH: ${{ github.workspace }}/.verification/burntato
+        run: npm run check:source
+
+      - name: Test source checks
+        env:
+          BURNTATO_PATH: ${{ github.workspace }}/.verification/burntato
+        run: npm test
+
+      - name: Check links, types, and production build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+        run: npm run verify

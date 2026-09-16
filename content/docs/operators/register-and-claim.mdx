@@ -1,0 +1,54 @@
+---
+id: register-and-claim
+slug: operators/register-and-claim
+label: Register and claim
+title: Register, sync, and claim Operators
+description: Single and batch flows for wallets that hold one or many Statics Operators.
+updated: 2026-09-16
+order: 51
+---
+
+The router exposes single-Operator methods and atomic batch methods for common multi-Operator wallets.
+
+## Register
+
+```solidity
+register(operatorId)
+registerBatch(operatorIds)
+```
+
+Registration is current-owner-only and begins prospectively at the Operator's current canonical multiplier. A batch must be nonempty, strictly increasing, and owned by one caller.
+
+## Sync
+
+```solidity
+sync(operatorId)
+syncBatch(operatorIds)
+```
+
+Sync is permissionless. It first settles the old stored weight, then returns one of three outcomes:
+
+- `Unchanged`
+- `WeightIncreased`
+- `Invalidated`
+
+Batch IDs must be nonempty, strictly increasing, and already registered.
+
+## Claim
+
+```solidity
+claim(operatorId, receiver)
+claimBatch(operatorIds, receiver)
+```
+
+Only the current owner can claim. A batch combines multiple registrations into one native transfer and accepts one explicit receiver. It must use a nonempty, strictly increasing list of registrations currently owned by the caller.
+
+## Preview and accrual
+
+`previewRewards(operatorId)` returns current owner, current canonical weight, whether a transfer is detected, claimable whole wei, forfeitable value, and fractional remainder. `registrationOf(operatorId)` returns the stored registration.
+
+`accrue()` recognizes queued or force-sent native revenue. Client reads that calculate a wallet's pool share should use current registered weights and should refresh after any Operator transfer or activation change.
+
+## UX for many Operators
+
+Discover owned Operators from durable NFT `Transfer` history plus live `ownerOf` checks. Keep selection in a contained list or modal rather than a page-height dropdown. Offer “all eligible” for register, sync, and claim, while preserving per-Operator status and transaction simulation.

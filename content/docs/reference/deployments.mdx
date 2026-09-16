@@ -1,0 +1,39 @@
+---
+id: deployments
+slug: reference/deployments
+label: Deployments
+title: Deployments and public manifests
+description: Current public Burntato deployment records, compatibility boundaries, and the addresses integrations should pin.
+updated: 2026-09-16
+order: 81
+---
+
+The repository includes a public machine-readable record for the Robinhood Chain testnet launch at [`/deployments/robinhood-testnet-46630-launch.json`](/deployments/robinhood-testnet-46630-launch.json).
+
+## Robinhood Chain testnet
+
+| Field | Value |
+| --- | --- |
+| Network | Robinhood Chain Testnet |
+| Chain ID | 46630 |
+| Status in manifest | live |
+| Burntato Diamond / POTATO | `0x1FA9a3c895e802670b35a9d577D42d4dE20e4818` |
+| Swap-fee hook | `0x5b7a45802d5a6076b510D2d9D9EC175a19EE2444` |
+| Operator rewards router | `0x09ac7A514db0bBf0B2E3630ace9C30b17393E24D` |
+| Statics Operator NFT | `0x8BB2E39abAE7346293Ff084fd4D104b064BEbC71` |
+| Activation Registry | `0xcE4D413915B4C6dE7DfD486d233596Da35c5cFbD` |
+| POTATO pool ID | `0xd0bb2fb1266e97d81cf260a1b4d12d21eee323dd0189265483baf9b8987fd91b` |
+
+The manifest also records facets, roles, economics, source commits, runtime code hashes, launch transactions, and verification results.
+
+## Compatibility warning
+
+The testnet instance was built from Burntato commit `07688de3193492aca399c8bbadc9321162e5f726`. It predates later current-source Recovery safety, configurable administration, purchase-activation, sponsorship provenance, and launch-curve work.
+
+Do not expose a current-source selector merely because it appears in these docs. Compare the deployment's recorded source, installed loupe selectors, and live bytecode first.
+
+## Local and hosted forks
+
+Fork deployments are disposable environments, not stable network releases. Consume their generated public deployment artifact, validate the connected chain ID and bytecode, and do not copy an address from a prior fork restart.
+
+Private RPC URLs and private keys never belong in a public deployment record.

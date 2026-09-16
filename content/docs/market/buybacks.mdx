@@ -1,0 +1,40 @@
+---
+id: buybacks
+slug: market/buybacks
+label: Buybacks
+title: Permissionless Treasury buybacks
+description: How reserve ETH is funded, rate-limited, spent into the canonical pool, and accounted for.
+updated: 2026-09-16
+order: 42
+---
+
+Burntato accumulates a dedicated ETH reserve for POTATO buybacks. Anyone can fund the reserve and anyone can execute an eligible buyback; acquired POTATO goes to the current Treasury recipient.
+
+## Fund the reserve
+
+Purchase allocations and payable `fundBuybackReserve()` increase `buybackReserveEth()`. Direct funding must be positive and does not execute a swap or advance the cooldown.
+
+Funding remains available before purchase initialization, while paused, before market launch, and after Diamond finalization. A plain ETH transfer does not credit the reserve.
+
+## Execute
+
+`buyback()` is parameterless. After launch and cooldown, it:
+
+1. selects at most the governed `maxSpend` slice;
+2. reserves room for the configured caller reward;
+3. buys POTATO exact-input through the canonical pool;
+4. sends output directly to the current Treasury recipient;
+5. calculates the caller reward from **actual ETH spent**; and
+6. restores unspent slice value to the tracked reserve.
+
+There is intentionally no user-supplied quote, slippage floor, deadline, or output recipient.
+
+## Failure and partial fill
+
+A zero-spend or zero-output execution reverts completely: no caller reward, reserve change, or cooldown consumption. A partial positive fill is valid, and the event reports gross slice, ETH spent, POTATO bought, reward, and final reserve.
+
+## Governed limits
+
+The fresh default cap is 2 ETH, caller reward is 50 BPS, and delay is one block. The installed facet permanently caps the reward rate at 100 BPS once Diamond cuts are finalized. Setting `maxSpend` to zero disables execution without losing accrued reserve.
+
+The buyback path does not toggle external user buys and pays no bilateral hook fee.

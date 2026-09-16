@@ -1,0 +1,72 @@
+---
+id: how-to-play
+slug: start/how-to-play
+label: How to play
+title: How to play Burntato
+description: The complete player loop, from the first Grab through settlement and claims.
+updated: 2026-09-16
+order: 2
+---
+
+You need ETH for a Grab and gas. You do **not** need POTATO to enter the game.
+
+## 1. Read the round before signing
+
+The current round shows its holder, countdown, next Grab price, Winner pot, Recovery pool, remaining emission, and your claim state. The stored onchain deadline is authoritative.
+
+Check that your wallet is on the supported network and that the round has not expired. A purchase must send the exact displayed price; stale or approximate values revert.
+
+## 2. Grab the Potato
+
+Calling `buyPotato()` does five things atomically:
+
+1. realizes the outgoing holder's earned POTATO;
+2. allocates your ETH under the round's snapshotted rules;
+3. makes you the current holder;
+4. starts your holder-time emission opportunity; and
+5. resets the deadline and calculates the higher next price.
+
+The first Grab is special: its full price funds the following round's Winner reserve. From Grab two onward, the configured purchase split applies.
+
+:::note No manual token claim after a pass
+When another player Grabs from you, the protocol finalizes and mints the POTATO you earned while holding. Your unvested opportunity is not minted.
+:::
+
+## 3. Decide whether to hold or pass
+
+There is no action required while you hold. Your potential POTATO reward grows linearly until its vesting duration is complete. The default is four minutes.
+
+Another player controls whether the Potato passes: they pay the new price and become the holder. You cannot force someone else to buy it from you.
+
+If your opportunity fully vests before the round expires, anyone may call `materializeMaturedEmission()` while the protocol is unpaused. This realizes the reward without changing the holder or timer.
+
+## 4. Settle an expired round
+
+After the deadline, `settleRound()` is permissionless. Settlement:
+
+- finalizes any unresolved last-holder emission;
+- records the last holder as winner;
+- consumes the target round's Recovery commitments;
+- burns and routes committed POTATO under the snapshotted split; and
+- makes Winner and Recovery ETH claimable.
+
+Settlement does not push ETH automatically. Claims are separate transactions.
+
+## 5. Claim
+
+Only the recorded winner can call `claimWinner(roundId, recipient)`. A Recovery participant calls `claimRecovery(roundId, recipient)`. Both accept an explicit safe recipient and can be claimed once.
+
+The next round can proceed independently of whether earlier claims have been collected.
+
+## Common transaction failures
+
+| Error | Meaning |
+| --- | --- |
+| `IncorrectPayment` | The Grab did not send the exact current price. Refresh the round. |
+| `RoundExpired` | The deadline passed before the Grab landed. Settle the round. |
+| `RoundNotExpired` | Settlement was attempted too early. |
+| `PurchasesNotInitialized` | The deployment is configured, but its authority has not opened purchases. |
+| `ProtocolPaused` | A guarded game flow is under emergency pause. |
+| `UnauthorizedWinner` | The caller is not the recorded winner for that round. |
+
+Next: [understand where every Grab goes](/docs/start/money-flows).

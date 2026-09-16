@@ -1,0 +1,64 @@
+---
+id: integration
+slug: build/integration
+label: Integration guide
+title: Integrating Burntato
+description: The minimum reads, writes, simulations, and state distinctions a wallet application should implement.
+updated: 2026-09-16
+order: 70
+---
+
+Use the Burntato Diamond for gameplay, POTATO, Recovery, settlement, claims, buybacks, Treasury rewards, and market views. Use the hook and Operator router only for their own independent state and actions.
+
+## Minimum current-round reads
+
+```solidity
+uint256 roundId = IGame(diamond).currentRoundId();
+Round memory round = IGame(diamond).getRound(roundId);
+(uint256 baseEarned, uint256 treasuryEarned) =
+    IGame(diamond).currentEarnedEmission();
+bool paused = IGovernance(diamond).paused();
+bool purchasesOpen = IGovernance(diamond).purchasesInitialized();
+```
+
+Display `round.nextPrice` and `round.deadline` directly. Use `round.config`, not the future `protocolConfig()`, for current economics.
+
+## Transaction pattern
+
+For every state-changing action:
+
+1. read current state;
+2. construct exact calldata and value;
+3. simulate against the connected account;
+4. request the wallet transaction;
+5. wait for its receipt;
+6. require successful receipt status; and
+7. refetch every dependent read.
+
+For a Grab, `msg.value` must equal the latest `nextPrice`. Competing purchases are expected; refresh and explain stale state rather than masking the revert.
+
+## Separate related states
+
+Do not collapse:
+
+- future reserves and active pots;
+- explicit sponsorship and automatic game allocation;
+- current-round config and governed future defaults;
+- round expiry, settlement, and claim completion;
+- base emission and Treasury-funded reward emission;
+- hook Treasury revenue and Diamond Treasury claims; or
+- registered Operator count and a wallet's activation-weighted pool share.
+
+## Network and deployment selection
+
+Treat the checked-in deployment manifest as a versioned public artifact. Validate chain ID and require bytecode at critical addresses before enabling writes. A manifest proves recorded provenance; it does not prove a connected RPC is on the expected fork or that live roles have not changed.
+
+The historical Robinhood testnet deployment is documented separately from current-source behavior. Gate newer selectors when the deployed source predates them.
+
+## POTATO routing
+
+Standard allowances do not override transfer restrictions. Use the protocol's commitment and schedule calls for exact internal movement, and canonical Uniswap v4 routes for market movement. Successful router activity should leave exact Permit2 and transient PoolManager allowances at zero.
+
+## Claim recipients
+
+Winner, Recovery, and Operator claims accept explicit recipients. Validate nonzero recipients, surface the final address before signature, and never silently default to a protocol custody address.
