@@ -18,7 +18,7 @@ Check that your wallet is on the supported network and that the round has not ex
 
 ## 2. Grab the Potato
 
-Calling `buyPotato()` does five things atomically:
+A successful Grab does five things in one transaction:
 
 1. realizes the outgoing holder's earned POTATO;
 2. allocates your ETH under the round's snapshotted rules;
@@ -26,7 +26,10 @@ Calling `buyPotato()` does five things atomically:
 4. starts your holder-time emission opportunity; and
 5. resets the deadline and calculates the higher next price.
 
-The first Grab is special: its full price funds the following round's Winner reserve. From Grab two onward, the configured purchase split applies.
+The first Grab is special: its full price funds the following round's Winner
+pot. From Grab two onward, the mainnet launch allocation applies: 25% current
+Winner, 2% next Winner, 40% Recovery, 5% Treasury, 13% buyback, and 15%
+Operators.
 
 :::note No manual token claim after a pass
 When another player Grabs from you, the protocol finalizes and mints the POTATO you earned while holding. Your unvested opportunity is not minted.
@@ -34,7 +37,8 @@ When another player Grabs from you, the protocol finalizes and mints the POTATO 
 
 ## 3. Decide whether to hold or pass
 
-There is no action required while you hold. Your potential POTATO reward grows linearly until its vesting duration is complete. The default is four minutes.
+There is no action required while you hold. Your potential POTATO reward grows
+linearly and reaches the full opportunity after four minutes.
 
 Another player controls whether the Potato passes: they pay the new price and become the holder. You cannot force someone else to buy it from you.
 
@@ -65,7 +69,7 @@ The next round can proceed independently of whether earlier claims have been col
 | `IncorrectPayment` | The Grab did not send the exact current price. Refresh the round. |
 | `RoundExpired` | The deadline passed before the Grab landed. Settle the round. |
 | `RoundNotExpired` | Settlement was attempted too early. |
-| `PurchasesNotInitialized` | The deployment is configured, but its authority has not opened purchases. |
+| `PurchasesNotInitialized` | Burntato has not opened for play yet. |
 | `ProtocolPaused` | A guarded game flow is under emergency pause. |
 | `UnauthorizedWinner` | The caller is not the recorded winner for that round. |
 

@@ -2,62 +2,66 @@
 id: verification
 slug: reference/verification
 label: Verification
-title: Verify a Burntato deployment
-description: A source-to-chain checklist for addresses, selectors, economics, custody, market bindings, and live operating state.
+title: Verify Burntato onchain
+description: The contract, game, market, and Operator checks users and integrations can verify directly.
 updated: 2026-09-16
 order: 82
 ---
 
-Verification is a sequence of independent claims. Source verification on an explorer does not prove current roles, correct initialization, or compatibility with a frontend.
+Burntato is designed to be read directly from chain. The official mainnet
+registry published at launch will identify the Diamond, swap-fee hook, Operator
+rewards router, and canonical external dependencies.
 
-## 1. Establish provenance
+## Confirm the contracts
 
-- Pin chain ID and a trusted RPC.
-- Read the deployment manifest and recorded source commit.
-- Require nonempty bytecode at the Diamond, hook, router, and named external dependencies.
-- Compare runtime code hashes where the manifest provides them.
-- Confirm deployment receipts succeeded.
+Before signing, confirm that your wallet is connected to the supported mainnet
+chain and that the application addresses match the official registry. The
+critical contracts should all contain bytecode:
 
-## 2. Inspect the Diamond
+- the Burntato Diamond, which is also the POTATO token address;
+- the Burntato swap-fee hook;
+- the Operator rewards router; and
+- the canonical Uniswap v4 dependencies used by the pool.
 
-- Resolve installed selectors through the loupe.
-- Confirm facet addresses match the intended release.
-- Read `foundationConfigured()`, `purchasesInitialized()`, `paused()`, and `protocolFinalized()`.
-- Read authority, guardian, Treasury recipient, reward allocator, and distributor state.
-- Compare `protocolConfig()` with intended future defaults and active `Round.config` separately.
+Explorer source verification makes contract code inspectable. It does not
+replace reading the current game and administrative state.
 
-## 3. Inspect accounting
+## Confirm the live round
 
-- Reconcile the current round, named future reserves, aggregate reserve liabilities, Treasury claims, buyback reserve, Recovery commitments, and Treasury reward escrow.
-- Confirm explicit sponsorship is not conflated with automatic game allocations.
-- Remember that the raw Diamond ETH balance can include untracked direct transfers.
+Read `currentRoundId()` and `getRound(roundId)` from the Diamond. The active
+round should expose the same holder, deadline, next price, Winner pot, Recovery
+pool, remaining emission, and allocation displayed by the application.
 
-## 4. Inspect the market
+Use `Round.config` for the active rules. `protocolConfig()` describes settings
+for later unsnapshotted rounds and may legitimately differ.
 
-- Confirm PoolKey currencies, PoolManager, hook, tick spacing, and pool ID.
-- Compare `marketCurveHash()` and position count.
-- Confirm launch state and dead-address position ownership.
-- Read hook owner, fee recipient, fee BPS, Operator router/share, and external-buy gate.
-- Verify the Diamond's canonical hook and PoolManager bindings.
+Also read:
 
-## 5. Inspect Operators
+- `purchasesInitialized()` to confirm play is open;
+- `paused()` to confirm guarded flows are available; and
+- `protocolFinalized()` to confirm whether Diamond cuts remain possible.
 
-- Confirm router bindings to Burntato, the Operator NFT, and Activation Registry.
-- Confirm the NFT and registry point back to the expected canonical relationship.
-- Read total registered weight and count.
-- Verify purchase and hook revenue route to the intended router.
+## Confirm the market
 
-## 6. Exercise representative flows
+`canonicalPoolKey()` identifies the only supported ETH/POTATO pool. Confirm its
+currencies, PoolManager, hook, zero native LP fee, and tick spacing. The market
+views also expose the six launch bands, stable curve hash, position count, and
+launch state.
 
-On a disposable or explicitly approved environment, prove:
+The hook exposes the 1% bilateral fee, its Treasury recipient, the 40% Operator
+share, and whether public POTATO buys are open. The public-buy gate does not
+affect the protocol's buyback route.
 
-- an exact-price Grab and stale-price failure;
-- holder-time emission at zero, partial, and full vesting;
-- expiry, settlement, Winner claim, and Recovery claim;
-- allowed and restricted POTATO movement;
-- canonical sell and, when enabled, buy routes;
-- buyback funding and positive execution;
-- Operator register, sync/invalidation, and batch claim; and
-- pause activation plus authority-only unpause.
+## Confirm Operator rewards
 
-Report each layer honestly: local tests, CI, fork qualification, live readback, explorer verification, and production deployment are different evidence.
+The rewards router identifies its Burntato Diamond, Statics Operator NFT, and
+Activation Registry as immutable bindings. `totalRegisteredWeight()` and
+`totalRegisteredOperators()` expose the current reward denominator, while
+`previewRewards(operatorId)` shows the claimable state for a known Operator.
+
+## Confirm accounting, not just balances
+
+Winner pots, Recovery pools, future reserves, Treasury claims, and the buyback
+reserve are separate liabilities. Read their dedicated views. A raw ETH balance
+alone cannot tell you which purpose the funds serve, and direct ETH transfers
+do not become sponsored pots.

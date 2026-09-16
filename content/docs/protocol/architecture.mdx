@@ -34,7 +34,8 @@ The **BurntatoSwapFeeHook** is a separate owned contract bound immutably to POTA
 
 The **BurntatoOperatorRewardsRouter** is a separate immutable integration bound to the Burntato Diamond, Statics Operator NFT, and Activation Registry. It accounts for revenue outside Diamond storage.
 
-Uniswap v4's PoolManager and PositionManager are external dependencies. On a self-contained local deployment Burntato deploys them; on Robinhood it validates and uses the canonical chain deployments.
+Uniswap v4's PoolManager and PositionManager are external dependencies. On
+Robinhood mainnet, Burntato validates and uses the canonical chain deployments.
 
 ## One address, multiple assets and roles
 

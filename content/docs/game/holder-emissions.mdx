@@ -26,9 +26,11 @@ Only `earned` is deducted and minted. The unearned portion stays in the same rou
 
 Purchase count by itself does not consume the budget. Cycling at the same timestamp earns zero.
 
-## Default curve
+## Launch curve
 
-The fresh default budget is 10,000 POTATO, the step is 10%, and vesting lasts four minutes. Fully vested opportunities therefore leave:
+Each round launches with a 10,000 POTATO base budget. A new holder can earn 10%
+of what remains, vesting linearly over four minutes. Fully vested opportunities
+therefore leave:
 
 ```text
 10,000 → 9,000 → 8,100 → 7,290 → ...

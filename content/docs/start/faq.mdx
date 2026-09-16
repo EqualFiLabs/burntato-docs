@@ -22,7 +22,14 @@ Yes. The next price and Winner pot are different quantities. Each Grab is divide
 
 ## Is Round 1 prefunded?
 
-A fresh default deployment funds an initial Winner reserve at 105% of its starting price, then applies that reserve when Round 1 activates. A particular deployment may use different governed inputs; read the live round.
+Yes. Mainnet launches Round 1 with a 0.0105 ETH Winner pot—105% of its 0.01
+ETH opening Grab price.
+
+## How is a Grab divided?
+
+The first Grab of each round goes entirely to the next round's Winner pot. From
+Grab two onward, 25% goes to the current Winner, 2% to the next Winner, 40% to
+Recovery, 5% to Treasury, 13% to buybacks, and 15% to Operators.
 
 ## Can someone add ETH to a running round?
 
@@ -38,7 +45,9 @@ Ordinary wallet-to-wallet transfers revert. Supported movement includes protocol
 
 ## Are POTATO buys always available?
 
-No. Fresh deployments start with external pool buys disabled. Sells and the protocol buyback path remain available once there is ETH-side pool inventory. Hook governance can enable or disable external buys repeatedly.
+No. The market begins POTATO-sided, and public buys open after protocol
+buybacks establish ETH-side liquidity. POTATO sells and the protocol buyback
+path can operate before public buys open.
 
 ## Does settlement pay everyone automatically?
 

@@ -8,7 +8,9 @@ updated: 2026-09-16
 order: 42
 ---
 
-Burntato accumulates a dedicated ETH reserve for POTATO buybacks. Anyone can fund the reserve and anyone can execute an eligible buyback; acquired POTATO goes to the current Treasury recipient.
+From Grab two onward, 13% of each payment enters a dedicated POTATO buyback
+reserve. Anyone can add ETH to that reserve and anyone can execute an eligible
+buyback; acquired POTATO goes to the current Treasury recipient.
 
 ## Fund the reserve
 
@@ -33,8 +35,11 @@ There is intentionally no user-supplied quote, slippage floor, deadline, or outp
 
 A zero-spend or zero-output execution reverts completely: no caller reward, reserve change, or cooldown consumption. A partial positive fill is valid, and the event reports gross slice, ETH spent, POTATO bought, reward, and final reserve.
 
-## Governed limits
+## Launch limits
 
-The fresh default cap is 2 ETH, caller reward is 50 BPS, and delay is one block. The installed facet permanently caps the reward rate at 100 BPS once Diamond cuts are finalized. Setting `maxSpend` to zero disables execution without losing accrued reserve.
+At launch, one execution can use at most 2 ETH, the caller reward is 0.5% of
+ETH actually spent, and the delay is one block. The installed facet permanently
+caps the reward rate at 1% once Diamond cuts are finalized. Setting `maxSpend`
+to zero disables execution without losing accrued reserve.
 
 The buyback path does not toggle external user buys and pays no bilateral hook fee.

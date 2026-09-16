@@ -10,9 +10,9 @@ test("fragment checks report the source label and missing value", () => {
   );
 });
 
-test("the local Burntato source and copied deployment manifest match the docs", () => {
+test("the local Burntato source and launch documentation match", () => {
   const protocolRoot = resolveProtocolRoot();
   const result = verifySource({ protocolRoot });
-  assert.equal(result.docsPages, 28);
-  assert.match(result.deploymentCommit, /^[0-9a-f]{40}$/);
+  assert.equal(result.docsPages, 27);
+  assert.equal(result.launchProfile, "25/2/40/5/13/15");
 });
