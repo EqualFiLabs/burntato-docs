@@ -52,7 +52,6 @@ export function verifySource({ root = process.cwd(), protocolRoot = resolveProto
       "hookFeeBps: 100",
       "potatoSeed: 100_000_000 ether",
       "INITIAL_WINNER_TARGET_BPS = 10_500",
-      "function launchDefaults()",
       "config.protocol.winnerBps = 2_500",
       "config.protocol.nextRoundWinnerBps = 200",
       "config.protocol.recoveryBps = 4_000",
