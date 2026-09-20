@@ -44,9 +44,6 @@ export function verifySource({ root = process.cwd(), protocolRoot = resolveProto
       "winnerBps: 2_500",
       "nextRoundWinnerBps: 200",
       "recoveryBps: 4_000",
-      "treasuryBps: 2_300",
-      "buybackBps: 1_000",
-      "operatorPurchaseBps: 0",
       "recoveryBurnBps: 9_000",
       "recoveryTreasuryBps: 1_000",
       "roundTimeoutDecay: 5 minutes",
@@ -55,6 +52,13 @@ export function verifySource({ root = process.cwd(), protocolRoot = resolveProto
       "hookFeeBps: 100",
       "potatoSeed: 100_000_000 ether",
       "INITIAL_WINNER_TARGET_BPS = 10_500",
+      "config.protocol.winnerBps = 2_500",
+      "config.protocol.nextRoundWinnerBps = 200",
+      "config.protocol.recoveryBps = 4_000",
+      "config.protocol.treasuryBps = 500",
+      "config.protocol.buybackBps = 1_300",
+      "config.protocol.operatorPurchaseBps = 1_500",
+      "config.operatorRewardShareBps = 4_000",
     ],
     "BurntatoDeploymentConfig.sol",
   );
@@ -111,29 +115,28 @@ export function verifySource({ root = process.cwd(), protocolRoot = resolveProto
   );
 
   requireFragments(
-    readDocs("content/docs/reference/defaults.mdx"),
+    readDocs("content/docs/reference/launch-parameters.mdx"),
     [
       "0.01 ETH",
       "10,000 POTATO",
       "100,000,000 POTATO",
       "6 bands / 56 locked positions",
-      "100 BPS (1%)",
+      "Burntato swap fee | 1%",
       "2 ETH",
+      "Current Winner pot | 25%",
+      "Next round's Winner pot | 2%",
+      "Current Recovery pool | 40%",
+      "Treasury | 5%",
+      "POTATO buyback reserve | 13%",
+      "Statics Operators | 15%",
+      "Operator share of the swap fee | 40%",
     ],
-    "reference/defaults.mdx",
+    "reference/launch-parameters.mdx",
   );
-
-  const sourceManifest = JSON.parse(
-    readProtocol("deployments/robinhood-testnet-46630-launch.json"),
-  );
-  const publicManifest = JSON.parse(
-    readDocs("public/deployments/robinhood-testnet-46630-launch.json"),
-  );
-  assert.deepEqual(publicManifest, sourceManifest, "public Robinhood deployment manifest drifted");
 
   return {
     protocolRoot,
-    deploymentCommit: sourceManifest.source.burntatoCommit,
+    launchProfile: "25/2/40/5/13/15",
     docsPages: fs
       .readdirSync(path.join(root, "content", "docs"), { recursive: true })
       .filter((entry) => entry.endsWith(".mdx")).length,

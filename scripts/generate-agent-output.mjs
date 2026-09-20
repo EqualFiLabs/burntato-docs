@@ -1,10 +1,10 @@
 // Generates the agent-facing artifacts into the static export:
-//   out/llms.txt       — llmstxt.org index with a key-facts preamble
-//   out/llms-small.txt — condensed corpus (orientation + core pages)
-//   out/llms-full.txt  — full clean concatenated corpus
+//   out/llms.txt: llmstxt.org index with a key-facts preamble
+//   out/llms-small.txt: condensed corpus (orientation + core pages)
+//   out/llms-full.txt: full clean concatenated corpus
 //
 // Reads clean markdown pre-rendered by the /raw/docs route handler during
-// `next build`, plus the public deployment manifest for machine-readable facts.
+// `next build`.
 // Runs in postbuild (after next build + pagefind).
 
 import fs from "node:fs";
@@ -15,7 +15,7 @@ import matter from "gray-matter";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://docs.burntato.com";
 const SITE_NAME = "Burntato Docs";
 const SITE_DESCRIPTION =
-  "Documentation for Burntato — a fully onchain Hot Potato game with holder-time POTATO emissions, forward Recovery commitments, permanently locked Uniswap v4 liquidity, Treasury buybacks, and Statics Operator rewards.";
+  "Documentation for Burntato, a fully onchain Hot Potato game with holder-time POTATO emissions, forward Recovery commitments, permanently locked Uniswap v4 liquidity, Treasury buybacks, and Statics Operator rewards.";
 
 const ROOT = process.cwd();
 const contentDir = path.join(ROOT, "content", "docs");
@@ -33,8 +33,7 @@ const SMALL_SLUGS = new Set([
   "potato/token",
   "protocol/architecture",
   "build/integration",
-  "reference/defaults",
-  "reference/deployments",
+  "reference/launch-parameters",
 ]);
 
 function findMdxFiles(directory) {
@@ -59,7 +58,7 @@ function readCleanBody(slug) {
 }
 
 if (!fs.existsSync(outDir)) {
-  console.error("generate-agent-output: out/ not found — run next build first.");
+  console.error("generate-agent-output: out/ not found; run next build first.");
   process.exit(1);
 }
 
@@ -77,19 +76,14 @@ const pages = findMdxFiles(contentDir)
   })
   .sort((left, right) => left.order - right.order);
 
-// ---- key facts from the public Robinhood testnet deployment manifest ----
-const deploymentPath = "deployments/robinhood-testnet-46630-launch.json";
-const deployment = JSON.parse(fs.readFileSync(path.join(ROOT, "public", deploymentPath), "utf8"));
 const facts = [
   `Game: fully onchain Hot Potato behind an EIP-2535 Diamond`,
-  `Fresh source default: 0.01 ETH starting Grab; 10% price step; 10,000 POTATO round emission`,
+  `Mainnet launch: 0.01 ETH starting Grab; 10% price step; 10,000 POTATO round emission`,
+  `Grab two onward: 25% current Winner, 2% next Winner, 40% Recovery, 5% Treasury, 13% buybacks, 15% Statics Operators`,
+  `First Grab: 100% funds the next round's Winner pot`,
   `Canonical market: native ETH/POTATO Uniswap v4 pool with 56 permanently locked positions`,
-  `Public deployment: ${deployment.network} (chainId ${deployment.chainId}) — ${deployment.status}`,
-  `Testnet Diamond and POTATO: ${deployment.burntato.diamond}`,
-  `Testnet swap-fee hook: ${deployment.burntato.hook}`,
-  `Testnet Operator router: ${deployment.burntato.operatorRewardsRouter}`,
-  `Testnet source commit: ${deployment.source.burntatoCommit} (historical; read the compatibility warning)`,
-  `Machine-readable deployment: ${SITE_URL}/${deploymentPath}`,
+  `Recovery settlement: 90% of committed POTATO is burned and 10% is credited to Treasury`,
+  `Operator rewards: 15% of Grab revenue plus 40% of Burntato's 1% swap fee`,
 ];
 
 // ---- llms.txt (index) ----
@@ -128,7 +122,7 @@ fs.writeFileSync(path.join(outDir, "llms-full.txt"), `${full}\n`);
 // ---- llms-small.txt ----
 const smallPages = pages.filter((p) => SMALL_SLUGS.has(p.slug));
 const smallHeader = [
-  `# ${SITE_NAME} — condensed context`,
+  `# ${SITE_NAME}: condensed context`,
   "",
   `> ${SITE_DESCRIPTION}`,
   "",
@@ -136,8 +130,7 @@ const smallHeader = [
   "",
   ...facts.map((f) => `- ${f}`),
   "",
-  "This is the orientation subset. Load the full corpus at "
-    + `${SITE_URL}/llms-full.txt and the machine-readable deployment at ${SITE_URL}/${deploymentPath}.`,
+  `This is the orientation subset. Load the full corpus at ${SITE_URL}/llms-full.txt.`,
   "",
   "---",
   "",

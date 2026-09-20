@@ -19,7 +19,7 @@ npm test
 npm run verify
 ```
 
-`check:source` compares documented assumptions and the published Robinhood testnet manifest against a sibling Burntato checkout at `../burntato/burntato`. Set `BURNTATO_PATH` to use another checkout. CI checks against the current `EqualFiLabs/burntato` `main` branch.
+`check:source` compares the documented launch profile and protocol assumptions against a sibling Burntato checkout at `../burntato/burntato`. Set `BURNTATO_PATH` to use another checkout. CI checks against the current `EqualFiLabs/burntato` `main` branch.
 
 The production build is a static export in `out/`. Its postbuild step adds Pagefind search plus `llms.txt`, `llms-small.txt`, `llms-full.txt`, and clean Markdown routes for agent-readable documentation.
 

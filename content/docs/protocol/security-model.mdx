@@ -44,10 +44,14 @@ The 30-day holderless-predecessor escape prevents Recovery commitments from rema
 
 ## Administrative assumptions
 
-Before authority renunciation, users trust the configured authority for selector upgrades and future economic defaults. Hook ownership separately controls fees, fee recipients, Operator routing, and the external-buy gate. On a canonical Robinhood deployment, PoolManager governance is external to Burntato.
+Before authority renunciation, users trust the configured authority for
+selector upgrades and future economic settings. Hook ownership separately
+controls fees, fee recipients, Operator routing, and the public-buy gate. On
+Robinhood mainnet, PoolManager governance is external to Burntato.
 
 Diamond finalization removes selector upgrades but not these other roles. Verify each address and state independently.
 
-:::warning Documentation is not an audit
-These are intended properties and integration boundaries. Review deployed bytecode, current roles, source provenance, test evidence, and any independent security assessment before treating a deployment as qualified.
+:::warning Verify what you use
+Mainnet addresses, source verification, current roles, and published security
+assessments should all match the official launch registry before you interact.
 :::

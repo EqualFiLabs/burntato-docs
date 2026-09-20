@@ -23,7 +23,7 @@ const gameSteps = [
   },
   {
     number: "03",
-    title: "Pass it—or win",
+    title: "Pass it or win",
     body: "Another Grab replaces you and realizes your earned POTATO. If the timer expires while you hold it, you can settle and claim the Winner pot.",
     href: "/docs/game/rounds-and-grabs",
   },
@@ -59,7 +59,7 @@ const paths = [
   {
     eyebrow: "Operators",
     title: "Share protocol revenue by activation weight",
-    body: "Registered Statics Operators share configured purchase revenue and a governed portion of the existing swap fee.",
+    body: "Registered Statics Operators share 15% of later Grabs and 40% of the canonical pool's existing 1% swap fee.",
     links: [
       { label: "Operator rewards", href: "/docs/operators/overview" },
       { label: "Register and claim", href: "/docs/operators/register-and-claim" },
@@ -68,7 +68,7 @@ const paths = [
   {
     eyebrow: "Builders",
     title: "Integrate one Diamond and its supporting contracts",
-    body: "Read the EIP-2535 architecture, public interfaces, events, accounting boundaries, indexing model, and deployment manifests.",
+    body: "Read the EIP-2535 architecture, public interfaces, events, accounting boundaries, and indexing model.",
     links: [
       { label: "Integration guide", href: "/docs/build/integration" },
       { label: "Architecture", href: "/docs/protocol/architecture" },
@@ -80,7 +80,7 @@ const paths = [
 const protocolHighlights = [
   {
     title: "Round-snapshotted economics",
-    body: "Governance can update future defaults without rewriting an active round or its already-open Recovery market.",
+    body: "Every round locks its rules before participation, so active game and Recovery terms cannot change underneath players.",
     href: "/docs/protocol/configuration",
   },
   {
@@ -105,7 +105,7 @@ const protocolHighlights = [
   },
   {
     title: "Progressive administration",
-    body: "A guardian can pause critical value flows; finalization disables Diamond cuts while leaving defined administration available.",
+    body: "A guardian can pause critical value flows, while round snapshots preserve the terms players entered under.",
     href: "/docs/protocol/governance",
   },
 ];
@@ -122,7 +122,7 @@ export default function HomePage() {
         <section className="burntato-hero">
           <div className="burntato-hero-copy">
             <div className="hero-kicker">Fully onchain Hot Potato</div>
-            <h1>Grab it. Hold it. Pass it—or win the pot.</h1>
+            <h1>Grab it. Hold it. Pass it or win the pot.</h1>
             <p>
               Burntato is a timed ownership game. Every Grab pays into the round, resets the clock,
               raises the next price, and gives the new holder a chance to earn POTATO. The last holder

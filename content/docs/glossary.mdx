@@ -10,48 +10,49 @@ order: 5
 
 ## Game terms
 
-**Grab** — a successful exact-price `buyPotato()` purchase that changes the current holder.
+**Grab:** a successful exact-price `buyPotato()` purchase that changes the current holder.
 
-**Holder** — the wallet currently holding the in-game Hot Potato state. This is not an ERC-721 or transferable token.
+**Holder:** the wallet currently holding the in-game Hot Potato state. This is not an ERC-721 or transferable token.
 
-**Winner pot** — ETH claimable by the final holder after a round is settled.
+**Winner pot:** ETH claimable by the final holder after a round is settled.
 
-**Winner reserve** — ETH assigned to a future round and moved into its Winner pot at activation.
+**Winner reserve:** ETH assigned to a future round and moved into its Winner pot at activation.
 
-**Recovery pool** — ETH distributed among POTATO commitments after settlement.
+**Recovery pool:** ETH distributed among POTATO commitments after settlement.
 
-**Recovery reserve** — ETH assigned to a future round and moved into its Recovery pool at activation.
+**Recovery reserve:** ETH assigned to a future round and moved into its Recovery pool at activation.
 
-**Sponsorship** — the portion of a future reserve added through permissionless funding calls. Automatic game allocations are tracked separately.
+**Sponsorship:** the portion of a future reserve added through permissionless funding calls. Automatic game allocations are tracked separately.
 
-**Round snapshot** — the complete configuration fixed for a round before participation under those terms.
+**Round snapshot:** the complete configuration fixed for a round before participation under those terms.
 
 ## POTATO terms
 
-**POTATO** — Burntato's 18-decimal, transfer-restricted ERC-20 behind the Diamond.
+**POTATO:** Burntato's 18-decimal, transfer-restricted ERC-20 behind the Diamond.
 
-**Emission opportunity** — the maximum POTATO a holder can vest from the round's remaining budget.
+**Emission opportunity:** the maximum POTATO a holder can vest from the round's remaining budget.
 
-**Materialization** — minting a fully vested opportunity before the holder changes or the round settles.
+**Materialization:** minting a fully vested opportunity before the holder changes or the round settles.
 
-**Recovery commitment** — POTATO escrowed for `currentRoundId + 1` and normally consumed at that round's settlement.
+**Recovery commitment:** POTATO escrowed for `currentRoundId + 1` and normally consumed at that round's settlement.
 
-**Treasury reward schedule** — existing Treasury-funded POTATO distributed through a future holder-time curve without minting new POTATO.
+**Treasury reward schedule:** existing Treasury-funded POTATO distributed through a future holder-time curve without minting new POTATO.
 
 ## Market terms
 
-**Canonical pool** — the one native ETH/POTATO Uniswap v4 pool configured in the Diamond and bound to the Burntato hook.
+**Canonical pool:** the one native ETH/POTATO Uniswap v4 pool configured in the Diamond and bound to the Burntato hook.
 
-**Hook fee** — the bilateral swap fee realized in ETH and split between Treasury and the optional Operator router.
+**Hook fee:** the bilateral swap fee realized in ETH and split between Treasury and the optional Operator router.
 
-**Buyback reserve** — tracked Diamond ETH available for permissionless protocol POTATO purchases.
+**Buyback reserve:** tracked Diamond ETH available for permissionless protocol POTATO purchases.
 
-**Locked LP** — the 56 launch position NFTs sent permanently to the dead address.
+**Locked LP:** the 56 launch position NFTs sent permanently to the dead address.
 
 ## Operator terms
 
-**Statics Operator** — the external Genesis NFT whose canonical activation multiplier determines Burntato Operator reward weight.
+**Statics Operator:** the external Genesis NFT whose canonical activation multiplier determines Burntato Operator reward weight.
 
-**Registration** — a prospective binding of an Operator ID, its current owner, and its activation weight in Burntato's standalone router.
+**Registration:** a prospective binding of an Operator ID, its current owner,
+and its activation weight in Burntato's rewards router.
 
-**Sync** — permissionless reconciliation of a registration with current ownership and activation weight.
+**Sync:** permissionless reconciliation of a registration with current ownership and activation weight.

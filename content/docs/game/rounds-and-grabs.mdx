@@ -46,7 +46,9 @@ resetDuration = roundTimeout - reduction
 deadline = block.timestamp + resetDuration
 ```
 
-With fresh defaults, successful Grabs reset to 60, 55, 50 minutes, and so on until the five-minute floor. Every later Grab resets to five minutes. A new round starts over at the initial duration.
+At launch, successful Grabs reset to 60, 55, 50 minutes, and so on until the
+five-minute floor. Every later Grab resets to five minutes. A new round starts
+again at 60 minutes.
 
 Read the stored `Round.deadline`; do not reconstruct it from event ordering or a local clock.
 

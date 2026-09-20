@@ -1,0 +1,83 @@
+---
+id: launch-parameters
+slug: reference/launch-parameters
+label: Launch parameters
+title: Mainnet launch parameters
+description: The economic settings Burntato will use at mainnet launch.
+updated: 2026-09-16
+order: 80
+---
+
+Burntato launches with one clear economic profile. Every round locks its own
+terms before players participate, so the values shown for an active round do
+not change underneath it.
+
+## Grabs and round timing
+
+| Setting | Mainnet launch value |
+| --- | ---: |
+| Starting Grab price | 0.01 ETH |
+| Price increase | 10% per Grab |
+| Initial countdown reset | 1 hour |
+| Countdown reduction per Grab | 5 minutes |
+| Minimum countdown reset | 5 minutes |
+| Round 1 Winner pot | 0.0105 ETH |
+
+The first Grab of every round is special: **100% of its price funds the next
+round's Winner pot**. From Grab two onward, each payment follows the launch
+allocation:
+
+| Destination | Share |
+| --- | ---: |
+| Current Winner pot | 25% |
+| Next round's Winner pot | 2% |
+| Current Recovery pool | 40% |
+| Treasury | 5% |
+| POTATO buyback reserve | 13% |
+| Statics Operators | 15% |
+| **Total** | **100%** |
+
+For a 1 ETH Grab, that is 0.25 ETH to the current Winner pot, 0.02 ETH to the
+next Winner pot, 0.40 ETH to Recovery, 0.05 ETH to Treasury, 0.13 ETH to
+buybacks, and 0.15 ETH to Operators. At wei-level boundaries, the five
+non-Treasury shares round down and Treasury receives the exact remainder.
+
+## POTATO and Recovery
+
+| Setting | Mainnet launch value |
+| --- | ---: |
+| Base emission available per round | 10,000 POTATO |
+| Holder opportunity | 10% of remaining emission |
+| Full vesting time | 4 minutes |
+| Committed POTATO burned at settlement | 90% |
+| Committed POTATO credited to Treasury | 10% |
+
+Unused emission is never minted. POTATO is created only for holder time that is
+actually earned. Recovery commitments compete for ETH in the target round and
+are consumed under the 90/10 burn split when that round settles.
+
+## Market and buybacks
+
+| Setting | Mainnet launch value |
+| --- | ---: |
+| POTATO launch inventory | 100,000,000 POTATO |
+| Permanent liquidity | 6 bands / 56 locked positions |
+| Native Uniswap LP fee | 0% |
+| Burntato swap fee | 1% on buys and sells |
+| Operator share of the swap fee | 40% |
+| Maximum buyback slice | 2 ETH |
+| Buyback caller reward | 0.5% of ETH actually spent |
+| Buyback delay | 1 block |
+
+The market launches POTATO-sided. Protocol buybacks build ETH-side liquidity
+before public POTATO buys open. Position NFTs are sent permanently to the dead
+address, so the launch liquidity cannot be withdrawn or repositioned.
+
+## Rules stay fixed within a round
+
+Burntato snapshots a round's complete game configuration before participation
+under those terms. A later governance change can affect only rounds that have
+not yet been snapshotted. The application reads the active round directly and
+displays the terms that actually govern the next transaction.
+
+Next: [follow the complete ETH flow](/docs/start/money-flows).

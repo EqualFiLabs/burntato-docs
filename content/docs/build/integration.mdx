@@ -49,11 +49,12 @@ Do not collapse:
 - hook Treasury revenue and Diamond Treasury claims; or
 - registered Operator count and a wallet's activation-weighted pool share.
 
-## Network and deployment selection
+## Network and contract selection
 
-Treat the checked-in deployment manifest as a versioned public artifact. Validate chain ID and require bytecode at critical addresses before enabling writes. A manifest proves recorded provenance; it does not prove a connected RPC is on the expected fork or that live roles have not changed.
-
-The historical Robinhood testnet deployment is documented separately from current-source behavior. Gate newer selectors when the deployed source predates them.
+Use the official mainnet contract registry when it is published at launch.
+Validate the connected chain ID and require bytecode at critical addresses
+before enabling writes. Contract reads remain authoritative for live roles,
+round terms, pause state, and market availability.
 
 ## POTATO routing
 

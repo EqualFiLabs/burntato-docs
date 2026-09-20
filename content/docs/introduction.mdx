@@ -9,60 +9,76 @@ order: 1
 badge: Start
 ---
 
-Burntato is a timed ownership game played with ETH. One wallet holds the Hot Potato at a time. A **Grab** pays the displayed price, gives the Potato to the buyer, resets the countdown, and raises the price of the next Grab.
+Burntato is a fully onchain game of timing, conviction, and nerve. One wallet
+holds the Hot Potato. Every **Grab** pays the displayed ETH price, passes the
+Potato to a new holder, resets the countdown, and raises the price of the next
+Grab.
 
-If nobody Grabs before the countdown expires, the final holder wins the round's **Winner pot**. Holding the Potato also creates an opportunity to earn **POTATO**, the protocol token used by the Recovery Market.
+If the countdown reaches zero, the final holder wins the round's **Winner
+pot**. While the clock runs, holding the Potato earns **POTATO**, the asset used
+to compete for ETH in the Recovery Market.
 
 :::note The short version
-Grab the Potato, hold it long enough to earn POTATO, and either pass it to the next player or remain the holder when time expires.
+Grab the Potato, hold it to earn POTATO, and decide whether the next player
+takes it from you before the clock runs out.
 :::
 
-## The core loop
+## One action drives the whole system
 
-1. **Grab:** pay the exact current price in ETH.
-2. **Hold:** the countdown runs while your POTATO opportunity vests.
-3. **Pass or win:** another player can Grab at the higher next price. If nobody does, the current holder can settle the round and claim the Winner pot.
-4. **Recover:** POTATO holders can commit tokens before a future round starts, then share that round's Recovery ETH after settlement.
+1. **Grab:** pay the exact current price and become the holder.
+2. **Hold:** your POTATO opportunity vests with real holder time.
+3. **Pass or win:** another player can pay the higher next price, or the timer
+   can expire with you still holding.
+4. **Recover:** commit POTATO before the next round and compete for its Recovery
+   ETH.
 
-The game accounts for ETH on each purchase, but POTATO emission advances only with actual holder time. Rapid cycling does not create free emission.
+Rapid cycling cannot manufacture emission. A fast pass earns little or no
+POTATO; a full four-minute hold earns the complete opportunity available to
+that holder.
 
-## Where the ETH goes
+## Grabs build more than one prize
 
-The first Grab of every round funds the next round's Winner reserve. From the second Grab onward, the active round's snapshotted configuration divides the price among:
+The first Grab funds the following round's Winner pot. From Grab two onward,
+launch economics send 25% to the current Winner pot, 2% to the next Winner pot,
+40% to Recovery, 13% to POTATO buybacks, 15% to Statics Operators, and 5% to
+Treasury.
 
-- the current Winner pot;
-- the next round's Winner reserve;
-- the current Recovery pool;
-- Treasury;
-- the buyback reserve; and
-- Operator rewards, when configured.
+That means 67% of each later Grab builds current or future player pots, while
+the buyback allocation connects game activity to the POTATO market.
 
-See [Money flows](/docs/start/money-flows) for the accounting map and [Defaults](/docs/reference/defaults) for the fresh-deployment values.
+See [Money flows](/docs/start/money-flows) for the complete path and [Mainnet
+launch parameters](/docs/reference/launch-parameters) for every launch value.
 
-## POTATO is more than a points token
+## POTATO connects play, Recovery, and the market
 
-POTATO is emitted to holders, used in Recovery, traded through one canonical Uniswap v4 market, and deliberately transfer-restricted. It can move through supported protocol and market paths, but ordinary wallet-to-wallet transfers revert.
+POTATO is earned through holder time, committed and largely burned through
+Recovery, and priced in one canonical native ETH/POTATO Uniswap v4 pool. Its
+underlying token is deliberately transfer-restricted: protocol actions and the
+canonical market can move it, while ordinary wallet-to-wallet transfers
+revert.
 
-The canonical market begins with 100 million POTATO spread across 56 permanently locked liquidity positions. Treasury buybacks place ETH into that market. External buys begin disabled on a fresh deployment and can be enabled later by hook governance.
+The market launches with 100 million POTATO distributed across 56 permanently
+locked liquidity positions. Buybacks build ETH-side liquidity before public
+POTATO purchases open.
 
-## Three systems, one game
+## Four ways to participate
 
-| System | What it does |
+| Path | What you do |
 | --- | --- |
-| Hot Potato | Prices Grabs, runs the timer, allocates purchase ETH, and settles the Winner pot. |
-| Recovery Market | Escrows forward POTATO commitments and distributes a target round's Recovery ETH. |
-| Canonical market | Provides POTATO/ETH price discovery, Treasury fee revenue, and protocol-funded buybacks. |
-
-Statics Operators add a fourth participation path: registered Operators share configured purchase revenue and part of the existing swap fee according to activation weight.
+| Hot Potato | Grab, hold, and compete to finish the round as the final holder. |
+| Recovery | Commit POTATO before a round and share its Recovery ETH by weight. |
+| POTATO market | Buy or sell through the canonical pool once that direction is open. |
+| Statics Operators | Register Operators and share game and swap-fee revenue by activation weight. |
 
 ## What to read next
 
-- **New player:** [How to play](/docs/start/how-to-play)
-- **Following the economics:** [Money flows](/docs/start/money-flows)
-- **Holding POTATO:** [Recovery Market](/docs/recovery/overview)
-- **Running an Operator:** [Operator rewards](/docs/operators/overview)
-- **Building an integration:** [Architecture](/docs/protocol/architecture)
+- **Playing your first round:** [How to play](/docs/start/how-to-play)
+- **Following every ETH flow:** [Money flows](/docs/start/money-flows)
+- **Using POTATO:** [Recovery Market](/docs/recovery/overview)
+- **Holding Operators:** [Operator rewards](/docs/operators/overview)
+- **Building an integration:** [Integration guide](/docs/build/integration)
 
-:::warning Protocol, not a promise
-Prices, pots, emission opportunities, and market outcomes are onchain variables. The documentation explains the mechanism; it does not promise profit or guarantee a particular outcome.
+:::warning Understand the risk
+Prices, pots, market value, and Recovery outcomes depend on onchain activity and
+other participants. Burntato defines the rules; it does not guarantee a profit.
 :::

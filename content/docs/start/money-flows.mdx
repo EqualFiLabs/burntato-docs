@@ -18,16 +18,16 @@ This creates opening funding for the next game even when a round ends after only
 
 ## Grab two and later
 
-Later purchases use the active round's six configured shares:
+Later Grabs use the mainnet launch allocation:
 
-| Destination | Purpose |
-| --- | --- |
-| Current Winner | Paid to the final holder after settlement. |
-| Next Winner | Builds the following round's opening Winner pot. |
-| Current Recovery | Paid pro rata to POTATO commitments targeting this round. |
-| Treasury | Becomes pull-claimable by the configured Treasury recipient. |
-| Buyback reserve | Funds permissionless POTATO purchases into Treasury inventory. |
-| Operators | Is queued to the standalone Operator rewards router. |
+| Destination | Share | Purpose |
+| --- | ---: | --- |
+| Current Winner | 25% | Paid to the final holder after settlement. |
+| Next Winner | 2% | Builds the following round's opening Winner pot. |
+| Current Recovery | 40% | Shared by POTATO commitments targeting this round. |
+| Treasury | 5% | Becomes claimable by the Treasury recipient. |
+| Buyback reserve | 13% | Funds POTATO purchases into Treasury inventory. |
+| Operators | 15% | Is shared by registered Statics Operators. |
 
 Each proportional amount rounds down. Treasury receives the deterministic remainder so the six outputs always equal the exact purchase price.
 
@@ -55,4 +55,6 @@ Winner, Recovery, Treasury ETH, Treasury POTATO, and Operator rewards stay claim
 A plain ETH transfer to the Diamond increases its balance but does not credit Winner, Recovery, or buyback accounting. Use the explicit funding function for the bucket you intend.
 :::
 
-See [Configuration](/docs/protocol/configuration) for the constraints and [Defaults](/docs/reference/defaults) for the fresh-deployment profile.
+See [Mainnet launch parameters](/docs/reference/launch-parameters) for every
+launch value and [Configuration](/docs/protocol/configuration) for the round
+snapshot rules.

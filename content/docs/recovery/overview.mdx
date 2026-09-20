@@ -8,7 +8,9 @@ updated: 2026-09-16
 order: 20
 ---
 
-Recovery gives POTATO economic use outside an immediate sale. A holder commits POTATO **before** a target round begins. When that round settles, its Recovery ETH is divided among commitments by weight.
+Recovery turns POTATO into a claim on a future contest rather than a simple
+sell decision. Commit POTATO **before** the next round begins; when that round
+settles, its Recovery ETH is divided by commitment weight.
 
 ## The simple model
 
@@ -35,7 +37,8 @@ treasuryPotato = floor(totalCommitted * recoveryTreasuryBps / 10_000)
 burnedPotato = totalCommitted - treasuryPotato
 ```
 
-The burn-as-remainder rule accounts for every base unit. Fresh defaults burn 90% and make 10% claimable to Treasury.
+The burn-as-remainder rule accounts for every base unit. At launch, 90% is
+burned and 10% becomes claimable by Treasury.
 
 ## What sets the return
 

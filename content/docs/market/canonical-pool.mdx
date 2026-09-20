@@ -8,7 +8,9 @@ updated: 2026-09-16
 order: 40
 ---
 
-Burntato defines one canonical native ETH/POTATO Uniswap v4 pool. Native ETH is currency0, the Burntato Diamond is currency1, the native LP fee is zero, and the configured hook supplies protocol fee and transfer behavior.
+Burntato has one canonical native ETH/POTATO Uniswap v4 pool. Native ETH is
+currency0, the Burntato Diamond is currency1, the native LP fee is zero, and
+the Burntato hook supplies the 1% bilateral fee and POTATO transfer behavior.
 
 ## Structural identity
 
@@ -36,11 +38,15 @@ The Operator share divides this existing fee; it does not add a second fee. Divi
 
 Hook revenue bypasses Diamond claims and is not automatically added to liquidity, Winner, Recovery, or buyback accounting.
 
-## External-buy gate
+## How the market opens
 
-Fresh deployments begin with external pool buys disabled. Exact-input POTATO sells can remain available once the pool has ETH inventory, and the protocol's canonical buyback has a privileged fee-free buy path.
+The pool launches entirely POTATO-sided. Public buys remain closed while
+protocol buybacks establish ETH-side liquidity. Exact-input POTATO sells can
+operate once ETH inventory exists, and the canonical buyback uses a privileged
+fee-free buy path.
 
-Hook ownership may toggle external buys repeatedly. This control remains independent of Diamond finalization.
+Hook ownership controls the public-buy gate independently of Diamond
+finalization.
 
 ## Swap constraints
 

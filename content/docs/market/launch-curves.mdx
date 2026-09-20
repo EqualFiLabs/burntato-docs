@@ -8,7 +8,8 @@ updated: 2026-09-16
 order: 41
 ---
 
-The reviewed launch profile reserves 100 million POTATO by default and divides it across six overlapping price bands. It creates 56 Uniswap v4 positions without requiring launch ETH.
+Mainnet launches with 100 million POTATO divided across six overlapping price
+bands and 56 Uniswap v4 positions. No ETH seed is required.
 
 ## Allocation profile
 
@@ -28,7 +29,8 @@ The fixed profile uses tick spacing 60 and initial tick 170,280. `marketCurves()
 
 The initial square-root price is set to the profile's upper tick. Every position begins POTATO-sided, so `launchMarket()` is nonpayable and consumes no Treasury ETH.
 
-ETH-side inventory arrives later through buybacks and ordinary market activity. External buys begin disabled so governance can establish liquidity before opening that direction to users.
+ETH-side inventory arrives through protocol buybacks and subsequent market
+activity. Public buys open after the pool has established ETH liquidity.
 
 ## Permanent positions
 

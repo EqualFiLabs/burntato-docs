@@ -3,17 +3,19 @@ id: operators-overview
 slug: operators/overview
 label: Operator rewards
 title: Burntato rewards for Statics Operators
-description: How the standalone router shares purchase and swap revenue by registered activation weight.
+description: How registered Statics Operators share Grab and swap-fee revenue by activation weight.
 updated: 2026-09-16
 order: 50
 ---
 
-Burntato can route two native-ETH revenue streams to a standalone Operator rewards contract:
+Registered Statics Operators share two native-ETH revenue streams at launch:
 
-- the configured Operator share of second-and-later Grabs; and
-- the configured Operator share of the canonical hook's existing swap fee.
+- 15% of every second-and-later Grab; and
+- 40% of the canonical pool's existing 1% swap fee.
 
-The router does not modify Statics and does not custody funds inside Statics. It reads the external Operator NFT and its canonical Activation Registry.
+The rewards router does not modify Statics and does not custody funds inside
+Statics. It reads the Operator NFT and canonical Activation Registry, then
+accounts for Burntato revenue independently.
 
 ## Weight, not NFT count
 

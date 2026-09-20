@@ -61,7 +61,7 @@ const NAVIGATION_GROUPS: { title: string; pageIds: string[] }[] = [
   },
   {
     title: "Reference",
-    pageIds: ["defaults", "deployments", "verification"],
+    pageIds: ["launch-parameters", "verification"],
   },
 ];
 

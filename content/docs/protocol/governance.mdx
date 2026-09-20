@@ -8,7 +8,9 @@ updated: 2026-09-16
 order: 62
 ---
 
-Burntato does not require a built-in timelock. Deployment assigns one Diamond `authority`, which may be an EOA, Safe, or governance contract. The hook and, in self-contained environments, PoolManager ownership are separate roles.
+Burntato assigns one Diamond `authority`, which may be an EOA, Safe, or
+governance contract. Hook ownership and canonical PoolManager governance are
+separate roles.
 
 ## Diamond authority
 
@@ -23,7 +25,8 @@ While nonzero, authority can:
 - configure the market before launch; and
 - transfer or safely relinquish authority.
 
-Fresh deployments are configured and unpaused but purchases remain inactive until authority calls `initializePurchases()` once.
+Mainnet opens for play through the one-time `initializePurchases()` action after
+deployment and launch checks complete.
 
 ## Guardian
 
