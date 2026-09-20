@@ -17,7 +17,7 @@ export default function NotFound() {
           </div>
           <h1>Page not found</h1>
           <p className="lede">
-            The page you followed doesn&apos;t exist — it may have moved during a docs reorganization. Everything
+            The page you followed doesn&apos;t exist. It may have moved during a docs reorganization. Everything
             published lives in the sections below.
           </p>
           <div className="landing-actions">

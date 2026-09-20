@@ -23,7 +23,7 @@ const gameSteps = [
   },
   {
     number: "03",
-    title: "Pass it—or win",
+    title: "Pass it or win",
     body: "Another Grab replaces you and realizes your earned POTATO. If the timer expires while you hold it, you can settle and claim the Winner pot.",
     href: "/docs/game/rounds-and-grabs",
   },
@@ -122,7 +122,7 @@ export default function HomePage() {
         <section className="burntato-hero">
           <div className="burntato-hero-copy">
             <div className="hero-kicker">Fully onchain Hot Potato</div>
-            <h1>Grab it. Hold it. Pass it—or win the pot.</h1>
+            <h1>Grab it. Hold it. Pass it or win the pot.</h1>
             <p>
               Burntato is a timed ownership game. Every Grab pays into the round, resets the clock,
               raises the next price, and gives the new holder a chance to earn POTATO. The last holder

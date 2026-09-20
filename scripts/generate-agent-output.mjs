@@ -1,7 +1,7 @@
 // Generates the agent-facing artifacts into the static export:
-//   out/llms.txt       — llmstxt.org index with a key-facts preamble
-//   out/llms-small.txt — condensed corpus (orientation + core pages)
-//   out/llms-full.txt  — full clean concatenated corpus
+//   out/llms.txt: llmstxt.org index with a key-facts preamble
+//   out/llms-small.txt: condensed corpus (orientation + core pages)
+//   out/llms-full.txt: full clean concatenated corpus
 //
 // Reads clean markdown pre-rendered by the /raw/docs route handler during
 // `next build`.
@@ -15,7 +15,7 @@ import matter from "gray-matter";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://docs.burntato.com";
 const SITE_NAME = "Burntato Docs";
 const SITE_DESCRIPTION =
-  "Documentation for Burntato — a fully onchain Hot Potato game with holder-time POTATO emissions, forward Recovery commitments, permanently locked Uniswap v4 liquidity, Treasury buybacks, and Statics Operator rewards.";
+  "Documentation for Burntato, a fully onchain Hot Potato game with holder-time POTATO emissions, forward Recovery commitments, permanently locked Uniswap v4 liquidity, Treasury buybacks, and Statics Operator rewards.";
 
 const ROOT = process.cwd();
 const contentDir = path.join(ROOT, "content", "docs");
@@ -58,7 +58,7 @@ function readCleanBody(slug) {
 }
 
 if (!fs.existsSync(outDir)) {
-  console.error("generate-agent-output: out/ not found — run next build first.");
+  console.error("generate-agent-output: out/ not found; run next build first.");
   process.exit(1);
 }
 
@@ -122,7 +122,7 @@ fs.writeFileSync(path.join(outDir, "llms-full.txt"), `${full}\n`);
 // ---- llms-small.txt ----
 const smallPages = pages.filter((p) => SMALL_SLUGS.has(p.slug));
 const smallHeader = [
-  `# ${SITE_NAME} — condensed context`,
+  `# ${SITE_NAME}: condensed context`,
   "",
   `> ${SITE_DESCRIPTION}`,
   "",
